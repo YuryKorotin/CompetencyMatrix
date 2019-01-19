@@ -1,5 +1,26 @@
+import 'package:competency_matrix/heading_item.dart';
+import 'package:competency_matrix/list_item.dart';
+import 'package:competency_matrix/profession_area_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
+
+
+//Create builder of static items for fast scaffolding
+List<ListItem> buildStaticItems() {
+  List<ListItem> items = new List(6);
+
+  items.add(new HeadingItem("Programming"));
+
+  items.add(new ProfessionAreaItem("Mobile programming", 50));
+  items.add(new ProfessionAreaItem("Web programming", 15));
+  
+  items.add(new HeadingItem("English speaking"));
+
+  items.add(new ProfessionAreaItem("Grammar", 50));
+  items.add(new ProfessionAreaItem("Speaking", 25));
+
+  return items;
+}
 
 void main() => runApp(CompetencyMatrixApp());
 

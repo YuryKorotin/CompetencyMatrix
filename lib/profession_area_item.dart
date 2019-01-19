@@ -2,8 +2,8 @@
 import 'package:competency_matrix/list_item.dart';
 
 class ProfessionAreaItem implements ListItem {
-  final String sender;
-  final String body;
+  final String name;
+  final int progress;
 
-  ProfessionAreaItem(this.sender, this.body);
+  ProfessionAreaItem(this.name, this.progress);
 }
