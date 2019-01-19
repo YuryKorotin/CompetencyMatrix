@@ -7,13 +7,13 @@ import 'package:flutter/foundation.dart';
 
 //Create builder of static items for fast scaffolding
 List<ListItem> buildStaticItems() {
-  List<ListItem> items = new List(6);
+  List<ListItem> items = new List();
 
   items.add(new HeadingItem("Programming"));
 
   items.add(new ProfessionAreaItem("Mobile programming", 50));
   items.add(new ProfessionAreaItem("Web programming", 15));
-  
+
   items.add(new HeadingItem("English speaking"));
 
   items.add(new ProfessionAreaItem("Grammar", 50));
@@ -22,9 +22,17 @@ List<ListItem> buildStaticItems() {
   return items;
 }
 
-void main() => runApp(CompetencyMatrixApp());
+void main() {
+  runApp(CompetencyMatrixApp(
+    items : buildStaticItems()
+  ));
+}
 
 class CompetencyMatrixApp extends StatelessWidget {
+  final List<ListItem> items;
+
+  CompetencyMatrixApp({Key key, @required this.items}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -32,26 +40,34 @@ class CompetencyMatrixApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.cyan,
       ),
-      home: MyHomePage(title: 'Profession Areas'),
+      home: MyHomePage(title: 'Profession Areas', items: items),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+  final List<ListItem> items;
+
+  MyHomePage({Key key, this.title, @required this.items}) : super(key: key);
 
   final String title;
 
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  _MyHomePageState createState() => _MyHomePageState(items);
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+  List<ListItem> items;
+
+  _MyHomePageState(List<ListItem> items) {
+    this.items = items;
+  }
+
+  //int _counter = 0;
 
   void _incrementCounter() {
     setState(() {
-      _counter++;
+      //_counter++;
     });
   }
 
@@ -61,7 +77,32 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: Center(
+      body: ListView.builder(
+        // Let the ListView know how many items it needs to build
+        itemCount: items.length,
+        // Provide a builder function. This is where the magic happens! We'll
+        // convert each item into a Widget based on the type of item it is.
+        itemBuilder: (context, index) {
+          final item = items[index];
+
+          if (item is HeadingItem) {
+            return ListTile(
+              title: Text(
+                item.heading,
+                style: Theme.of(context).textTheme.headline,
+              ),
+            );
+          } else if (item is ProfessionAreaItem) {
+            int progress = item.progress;
+            return ListTile(
+              title: Text(item.name),
+              subtitle: Text("Progress is $progress%"),
+            );
+          }
+        },
+      ),
+
+      /*body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
@@ -74,7 +115,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
           ],
         ),
-      ),
+      ),*/
       floatingActionButton: FloatingActionButton(
         onPressed: _incrementCounter,
         tooltip: 'Increment',
