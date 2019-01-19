@@ -5,6 +5,8 @@
 // gestures. You can also use WidgetTester to find child widgets in the widget
 // tree, read text, and verify that the values of widget properties are correct.
 
+import 'package:competency_matrix/heading_item.dart';
+import 'package:competency_matrix/list_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -12,8 +14,10 @@ import 'package:competency_matrix/main.dart';
 
 void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
+    List<ListItem> testItems = buildStaticItems();
+
     //TODO: Add separate method for build fixture items
-    await tester.pumpWidget(CompetencyMatrixApp(items : buildStaticItems()));
+    await tester.pumpWidget(CompetencyMatrixApp(items : testItems));
 
     // Verify that our counter starts at 0.
     //expect(find.text('0'), findsOneWidget);
@@ -22,8 +26,8 @@ void main() {
     // TODO: Test adding new item
     //await tester.tap(find.byIcon(Icons.add));
     //await tester.pump();
-    
+
     expect(find.text('0'), findsNothing);
-    expect(find.text('Programming'), findsOneWidget);
+    expect(find.text((testItems[0] as HeadingItem).heading), findsOneWidget);
   });
 }
