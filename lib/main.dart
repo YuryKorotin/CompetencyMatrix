@@ -1,6 +1,6 @@
 import 'package:competency_matrix/heading_item.dart';
 import 'package:competency_matrix/list_item.dart';
-import 'package:competency_matrix/profession_area_item.dart';
+import 'package:competency_matrix/matrix_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 
@@ -11,13 +11,13 @@ List<ListItem> buildStaticItems() {
 
   items.add(new HeadingItem("Programming"));
 
-  items.add(new ProfessionAreaItem("Mobile programming", 50));
-  items.add(new ProfessionAreaItem("Web programming", 15));
+  items.add(new MatrixItem("Mobile programming", 50));
+  items.add(new MatrixItem("Web programming", 15));
 
   items.add(new HeadingItem("English speaking"));
 
-  items.add(new ProfessionAreaItem("Grammar", 50));
-  items.add(new ProfessionAreaItem("Speaking", 25));
+  items.add(new MatrixItem("Grammar", 50));
+  items.add(new MatrixItem("Speaking", 25));
 
   return items;
 }
@@ -92,7 +92,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 style: Theme.of(context).textTheme.headline,
               ),
             );
-          } else if (item is ProfessionAreaItem) {
+          } else if (item is MatrixItem) {
             int progress = item.progress;
             return ListTile(
               title: Text(item.name),
