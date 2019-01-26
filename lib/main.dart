@@ -41,7 +41,7 @@ class CompetencyMatrixApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.cyan,
       ),
-      home: MyHomePage(title: 'Profession Areas', items: items),
+      home: MyHomePage(title: 'Matrices', items: items),
     );
   }
 }
