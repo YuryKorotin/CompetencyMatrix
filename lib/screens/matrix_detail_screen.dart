@@ -1,12 +1,12 @@
 import 'package:competency_matrix/matrix_item.dart';
 import 'package:flutter/material.dart';
 
-class DetailScreen extends StatelessWidget {
+class MatrixDetailScreen extends StatelessWidget {
   // Declare a field that holds the Todo
   final MatrixItem matrixItem;
 
   // In the constructor, require a Todo
-  DetailScreen({Key key, @required this.matrixItem}) : super(key: key);
+  MatrixDetailScreen({Key key, @required this.matrixItem}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

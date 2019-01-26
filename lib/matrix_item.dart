@@ -8,9 +8,9 @@ class MatrixItem implements ListItem {
 
 
   MatrixItem(String name, int progress) {
-    name = name;
-    progress = progress;
-    description = "Some description";
+    this.name = name;
+    this.progress = progress;
+    this.description = "Some description";
   }
 
   MatrixItem.origin(String name, int progress, String description) {
