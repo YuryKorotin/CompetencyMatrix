@@ -1,3 +1,8 @@
+import 'dart:convert';
+
+import 'package:competency_matrix/repositories/matrixRepository.dart';
+import 'package:competency_matrix/vendor/barprogressindicator.dart';
+import 'package:competency_matrix/view/builders/matrix_item_builder.dart';
 import 'package:competency_matrix/view/models/heading_item.dart';
 import 'package:competency_matrix/view/models/list_item.dart';
 import 'package:competency_matrix/view/models/matrix_item.dart';
@@ -5,50 +10,12 @@ import 'package:competency_matrix/screens/matrix_detail_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 
-
-//Create builder of static items for fast scaffolding
-List<ListItem> buildStaticItems() {
-  List<ListItem> items = new List();
-
-  items.add(new HeadingItem("Programming"));
-
-  items.add(new MatrixItem.origin(
-      "Mobile programming",
-      50,
-      "profi",
-      new BigInt.from(1)));
-  items.add(new MatrixItem.origin(
-      "Web programming",
-      15,
-      "beginner",
-      new BigInt.from(2)));
-
-  items.add(new HeadingItem("English speaking"));
-
-  items.add(new MatrixItem.origin(
-      "Grammar",
-      50,
-      "medium",
-      new BigInt.from(3)));
-  items.add(new MatrixItem.origin(
-      "Speaking",
-      25,
-      "starter",
-      new BigInt.from(4)));
-
-  return items;
-}
-
 void main() {
-  runApp(CompetencyMatrixApp(
-    items : buildStaticItems()
-  ));
+  runApp(CompetencyMatrixApp());
 }
 
 class CompetencyMatrixApp extends StatelessWidget {
-  final List<ListItem> items;
-
-  CompetencyMatrixApp({Key key, @required this.items}) : super(key: key);
+  CompetencyMatrixApp({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -57,27 +24,34 @@ class CompetencyMatrixApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.cyan,
       ),
-      home: MyHomePage(title: 'Matrices', items: items),
+      home: MyHomePage(title: 'Matrices'),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  final List<ListItem> items;
-
-  MyHomePage({Key key, this.title, @required this.items}) : super(key: key);
+  MyHomePage({Key key, this.title}) : super(key: key);
 
   final String title;
 
   @override
-  _MyHomePageState createState() => _MyHomePageState(items);
+  _MyHomePageState createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  List<ListItem> items;
+  var items;
+  MatrixRepository matrixRepository;
+  MatrixItemBuilder viewModelBuilder = MatrixItemBuilder();
 
-  _MyHomePageState(List<ListItem> items) {
-    this.items = items;
+  _MyHomePageState();
+
+  @override
+  void initState() {
+    matrixRepository = MatrixRepository();
+
+    matrixRepository.load().then((parsedItems) => setState(() {
+          this.items = viewModelBuilder.buildFromLoadedItems(parsedItems);
+        }));
   }
 
   //int _counter = 0;
@@ -88,44 +62,75 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  Widget buildContent() {
+    var widget = null;
+    if (items == null) {
+      widget = new Center(
+        child: new Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            new Text(
+              'Loading matrices',
+              style: Theme.of(context).textTheme.title,
+            ),
+            BarProgressIndicator(
+              numberOfBars: 4,
+              color: Colors.grey,
+              fontSize: 10.0,
+              barSpacing: 2.0,
+              beginTweenValue: 5.0,
+              endTweenValue: 10.0,
+              milliseconds: 200,
+            ),
+          ],
+        ),
+      ); // This trailing comma makes auto-formatting nicer for build methods.
+      return widget;
+    }
+    widget = ListView.builder(
+      // Let the ListView know how many items it needs to build
+      itemCount: items.length,
+      // Provide a builder function. This is where the magic happens! We'll
+      // convert each item into a Widget based on the type of item it is.
+      itemBuilder: (context, index) {
+        final item = items[index];
+
+        if (item is HeadingItem) {
+          return ListTile(
+            title: Text(
+              item.heading,
+              style: Theme.of(context).textTheme.headline,
+            ),
+          );
+        } else if (item is MatrixItem) {
+          int progress = item.progress;
+          return ListTile(
+            title: Text(item.name),
+            subtitle: Text("Progress is $progress%"),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) =>
+                      MatrixDetailScreen(matrixItem: items[index]),
+                ),
+              );
+            },
+          );
+        }
+      },
+    );
+
+    return widget;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: ListView.builder(
-        // Let the ListView know how many items it needs to build
-        itemCount: items.length,
-        // Provide a builder function. This is where the magic happens! We'll
-        // convert each item into a Widget based on the type of item it is.
-        itemBuilder: (context, index) {
-          final item = items[index];
-
-          if (item is HeadingItem) {
-            return ListTile(
-              title: Text(
-                item.heading,
-                style: Theme.of(context).textTheme.headline,
-              ),
-            );
-          } else if (item is MatrixItem) {
-            int progress = item.progress;
-            return ListTile(
-              title: Text(item.name),
-              subtitle: Text("Progress is $progress%"),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => MatrixDetailScreen(matrixItem: items[index]),
-                  ),
-                );
-              },
-            );
-          }
-        },
-      ),
+      body: buildContent(),
 
       /*body: Center(
         child: Column(

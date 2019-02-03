@@ -7,7 +7,6 @@ class MatrixItem implements ListItem {
   int progress;
   String description;
 
-
   MatrixItem(String name, int progress) {
     this.id = new BigInt.from(0);
     this.name = name;
@@ -16,13 +15,14 @@ class MatrixItem implements ListItem {
   }
 
   MatrixItem.origin(
+      BigInt id,
       String name,
       int progress,
-      String description,
-      BigInt id) {
+      String description) {
+
     this.id = id;
     this.name = name;
     this.progress = progress;
-    this.description = "";
+    this.description = description;
   }
 }

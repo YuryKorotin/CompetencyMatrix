@@ -7,17 +7,14 @@
 
 import 'package:competency_matrix/view/models/heading_item.dart';
 import 'package:competency_matrix/view/models/list_item.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:competency_matrix/main.dart';
 
 void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    List<ListItem> testItems = buildStaticItems();
-
     //TODO: Add separate method for build fixture items
-    await tester.pumpWidget(CompetencyMatrixApp(items : testItems));
+    await tester.pumpWidget(CompetencyMatrixApp());
 
     // Verify that our counter starts at 0.
     //expect(find.text('0'), findsOneWidget);
@@ -28,6 +25,6 @@ void main() {
     //await tester.pump();
 
     expect(find.text('0'), findsNothing);
-    expect(find.text((testItems[0] as HeadingItem).heading), findsOneWidget);
+    expect(find.text("programming"), findsWidgets);
   });
 }
