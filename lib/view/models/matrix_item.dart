@@ -1,5 +1,5 @@
 // A ListItem that contains data to display a profession area
-import 'package:competency_matrix/list_item.dart';
+import 'package:competency_matrix/view/models/list_item.dart';
 
 class MatrixItem implements ListItem {
   String name;

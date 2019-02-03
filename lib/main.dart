@@ -1,6 +1,6 @@
-import 'package:competency_matrix/heading_item.dart';
-import 'package:competency_matrix/list_item.dart';
-import 'package:competency_matrix/matrix_item.dart';
+import 'package:competency_matrix/view/models/heading_item.dart';
+import 'package:competency_matrix/view/models/list_item.dart';
+import 'package:competency_matrix/view/models/matrix_item.dart';
 import 'package:competency_matrix/screens/matrix_detail_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';

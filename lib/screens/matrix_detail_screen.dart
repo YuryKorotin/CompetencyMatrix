@@ -1,4 +1,4 @@
-import 'package:competency_matrix/matrix_item.dart';
+import 'package:competency_matrix/view/models/matrix_item.dart';
 import 'package:competency_matrix/utils/color_pallette.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_circular_chart/flutter_circular_chart.dart';
