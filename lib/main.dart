@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:competency_matrix/repositories/matrixRepository.dart';
 import 'package:competency_matrix/view/models/heading_item.dart';
 import 'package:competency_matrix/view/models/list_item.dart';
 import 'package:competency_matrix/view/models/matrix_item.dart';
@@ -6,33 +9,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 
 
-//Create builder of static items for fast scaffolding
-List<ListItem> buildStaticItems() {
-  List<ListItem> items = new List();
-
-  items.add(new HeadingItem("Programming"));
-
-  items.add(new MatrixItem("Mobile programming", 50));
-  items.add(new MatrixItem("Web programming", 15));
-
-  items.add(new HeadingItem("English speaking"));
-
-  items.add(new MatrixItem("Grammar", 50));
-  items.add(new MatrixItem("Speaking", 25));
-
-  return items;
-}
-
 void main() {
-  runApp(CompetencyMatrixApp(
-    items : buildStaticItems()
-  ));
+
+  runApp(CompetencyMatrixApp());
 }
 
 class CompetencyMatrixApp extends StatelessWidget {
-  final List<ListItem> items;
 
-  CompetencyMatrixApp({Key key, @required this.items}) : super(key: key);
+  CompetencyMatrixApp({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +25,7 @@ class CompetencyMatrixApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.cyan,
       ),
-      home: MyHomePage(title: 'Matrices', items: items),
+      home: MyHomePage(title: 'Matrices'),
     );
   }
 }
@@ -49,19 +33,25 @@ class CompetencyMatrixApp extends StatelessWidget {
 class MyHomePage extends StatefulWidget {
   final List<ListItem> items;
 
-  MyHomePage({Key key, this.title, @required this.items}) : super(key: key);
+
+  MyHomePage({Key key, this.title}) : super(key: key);
 
   final String title;
 
   @override
-  _MyHomePageState createState() => _MyHomePageState(items);
+  _MyHomePageState createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
   List<ListItem> items;
+  MatrixRepository matrixRepository;
 
-  _MyHomePageState(List<ListItem> items) {
-    this.items = items;
+  _MyHomePageState() {
+    matrixRepository = MatrixRepository();
+
+    matrixRepository.load().then((val) => setState(() {
+      this.items = buildListItems(items);
+    }));
   }
 
   //int _counter = 0;

@@ -16,6 +16,6 @@ class MatrixItem implements ListItem {
   MatrixItem.origin(String name, int progress, String description) {
     this.name = name;
     this.progress = progress;
-    this.description = "";
+    this.description = description;
   }
 }
