@@ -12,13 +12,29 @@ List<ListItem> buildStaticItems() {
 
   items.add(new HeadingItem("Programming"));
 
-  items.add(new MatrixItem("Mobile programming", 50));
-  items.add(new MatrixItem("Web programming", 15));
+  items.add(new MatrixItem.origin(
+      "Mobile programming",
+      50,
+      "profi",
+      new BigInt.from(1)));
+  items.add(new MatrixItem.origin(
+      "Web programming",
+      15,
+      "beginner",
+      new BigInt.from(2)));
 
   items.add(new HeadingItem("English speaking"));
 
-  items.add(new MatrixItem("Grammar", 50));
-  items.add(new MatrixItem("Speaking", 25));
+  items.add(new MatrixItem.origin(
+      "Grammar",
+      50,
+      "medium",
+      new BigInt.from(3)));
+  items.add(new MatrixItem.origin(
+      "Speaking",
+      25,
+      "starter",
+      new BigInt.from(4)));
 
   return items;
 }
