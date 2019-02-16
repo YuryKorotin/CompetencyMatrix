@@ -1,6 +1,7 @@
 [
   {
     "id": 1,
+    "category" :"Programming",
     "name": "Mobile programmer",
     "description": "profi",
     "progress": 90
@@ -8,6 +9,7 @@
   {
     "id": 2,
     "name": "Web programmer",
+    "category" :"Programming",
     "description": "medium",
     "progress": 50
   }
