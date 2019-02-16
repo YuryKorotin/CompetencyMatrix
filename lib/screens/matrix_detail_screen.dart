@@ -1,7 +1,6 @@
 import 'package:competency_matrix/view/matrix_detail/diagram_widget.dart';
-import 'package:competency_matrix/view/matrix_detail/list_widget.dart';
+import 'package:competency_matrix/view/matrix_detail/knowledge_list_widget.dart';
 import 'package:competency_matrix/view/models/matrix_item.dart';
-import 'package:competency_matrix/utils/color_pallette.dart';
 import 'package:flutter/material.dart';
 
 class MatrixDetailScreen extends StatefulWidget {
@@ -18,13 +17,15 @@ class MatrixDetailScreen extends StatefulWidget {
 }
 class MatrixState extends State<MatrixDetailScreen> {
   int _currentIndex = 0;
-  final List<Widget> _children = [
-    ListWidget(Colors.deepOrange),
-    DiagramWidget(Colors.amber)
-  ];
+  List<Widget> _children;
   final MatrixItem matrixItem;
 
-  MatrixState(@required this.matrixItem);
+  MatrixState(@required this.matrixItem) {
+    _children = [
+      KnowledgeListWidget(matrixItem.id),
+      DiagramWidget(Colors.amber)
+    ];
+  }
 
   /*@override
   Widget build(BuildContext context) {

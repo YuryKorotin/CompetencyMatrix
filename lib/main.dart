@@ -54,14 +54,6 @@ class _MyHomePageState extends State<MyHomePage> {
         }));
   }
 
-  //int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      //_counter++;
-    });
-  }
-
   Widget buildContent() {
     var widget = null;
     if (items == null) {
@@ -146,11 +138,11 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
       ),*/
-      floatingActionButton: FloatingActionButton(
+      /*floatingActionButton: FloatingActionButton(
         onPressed: _incrementCounter,
         tooltip: 'Increment',
         child: Icon(Icons.add),
-      ),
+      ),*/
     );
   }
 }

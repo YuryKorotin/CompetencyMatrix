@@ -1,13 +1,11 @@
-import 'package:dartson/dartson.dart';
-
-class Matrix {
+class MatrixDetail {
   final BigInt id;
   final String name;
   final String description;
   final String category;
   final int progress;
 
-  Matrix({
+  MatrixDetail({
     this.id,
     this.name,
     this.description,
@@ -15,8 +13,8 @@ class Matrix {
     this.progress
   });
 
-  factory Matrix.fromJson(Map<String, dynamic> json){
-    return new Matrix(
+  factory MatrixDetail.fromJson(Map<String, dynamic> json){
+    return new MatrixDetail(
         id : new BigInt.from(json["id"]),
         name: json['name'],
         description: json['description'],

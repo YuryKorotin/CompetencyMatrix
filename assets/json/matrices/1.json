@@ -3,7 +3,7 @@
   "items": [
     {
       "id": 1,
-      "name": "data structures",
+      "name": "Data structures",
       "levels": [
         {
           "name": "pow(2, n)",
@@ -29,7 +29,7 @@
     },
     {
       "id": 2,
-      "name": "algorithms",
+      "name": "Algorithms",
       "levels": [
         {
           "name": "pow(2, n)",
