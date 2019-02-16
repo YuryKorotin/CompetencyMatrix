@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:competency_matrix/repositories/matrixRepository.dart';
+import 'package:competency_matrix/repositories/matrix_repository.dart';
 import 'package:competency_matrix/vendor/barprogressindicator.dart';
 import 'package:competency_matrix/view/builders/matrix_item_builder.dart';
 import 'package:competency_matrix/view/models/heading_item.dart';
