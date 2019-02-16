@@ -112,7 +112,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 context,
                 MaterialPageRoute(
                   builder: (context) =>
-                      MatrixDetailScreen(matrixItem: items[index]),
+                      MatrixDetailScreen(items[index]),
                 ),
               );
             },
