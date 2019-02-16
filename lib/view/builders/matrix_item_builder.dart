@@ -39,7 +39,16 @@ class MatrixItemBuilder {
   List<ListItem> buildFromLoadedItems(List<Matrix> items) {
     List<ListItem> viewItems = new List();
 
+    String currentCategory = items.first.category;
+    HeadingItem header = HeadingItem(currentCategory);
+    viewItems.add(header);
+
     for (final x in items) {
+      if (x.category != currentCategory) {
+        currentCategory = x.category;
+        header = HeadingItem(currentCategory);
+        viewItems.add(header);
+      }
       viewItems.add(new MatrixItem.origin(
           x.id,
           x.name,
