@@ -55,7 +55,7 @@
     },
     {
       "id": 2,
-      "name": "systems programming",
+      "name": "Systems programming",
       "levels": [
         {
           "name": "pow(2, n)",
