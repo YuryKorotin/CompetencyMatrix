@@ -1,25 +1,21 @@
+import 'package:competency_matrix/net/models/knowledge_item.dart';
+
 class MatrixDetail {
   final BigInt id;
   final String name;
-  final String description;
-  final String category;
-  final int progress;
+  final List<KnowledgeItem> items;
 
   MatrixDetail({
     this.id,
     this.name,
-    this.description,
-    this.category,
-    this.progress
+    this.items
   });
 
   factory MatrixDetail.fromJson(Map<String, dynamic> json){
     return new MatrixDetail(
         id : new BigInt.from(json["id"]),
         name: json['name'],
-        description: json['description'],
-        category: json['category'],
-        progress: json["progress"]
+        items: json['items'],
     );
   }
 }
