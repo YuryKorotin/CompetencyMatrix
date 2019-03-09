@@ -1,3 +1,4 @@
+import 'package:competency_matrix/repositories/matrix_repository.dart';
 import 'package:competency_matrix/view/builders/matrix_detail_builder.dart';
 import 'package:competency_matrix/view/models/heading_item.dart';
 import 'package:competency_matrix/view/models/knowledge_item.dart';
@@ -15,11 +16,20 @@ class KnowledgeListWidget extends StatefulWidget {
 class KnowledgeListState extends State<KnowledgeListWidget> {
   final BigInt matrixId;
   var _items;
+  MatrixRepository matrixRepository;
   MatrixDetailBuilder viewModelBuilder = MatrixDetailBuilder();
 
-  KnowledgeListState(this.matrixId) {
-    _items = viewModelBuilder.buildStaticItems();
+  KnowledgeListState(this.matrixId)
+
+  @override
+  void initState() {
+    matrixRepository = MatrixRepository();
+
+    matrixRepository.loadSingle(this.matrixId).then((parsedItem) => setState(() {
+      this._items = viewModelBuilder.buildFromLoadedItem(parsedItem);
+    }));
   }
+
 
   @override
   Widget build(BuildContext context) {
