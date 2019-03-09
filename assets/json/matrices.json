@@ -12,5 +12,12 @@
     "category" :"Programming",
     "description": "medium",
     "progress": 50
+  },
+  {
+    "id": 3,
+    "name": "Network Security",
+    "category" :"Security",
+    "description": "medium",
+    "progress": 10
   }
 ]
