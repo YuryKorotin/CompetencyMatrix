@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:competency_matrix/net/models/knowledge_level.dart';
 import 'package:competency_matrix/net/models/matrix.dart';
 import 'package:competency_matrix/net/models/matrix_detail.dart';
 import 'package:competency_matrix/net/models/matrix_list.dart';
@@ -22,21 +23,23 @@ class MatrixRepository {
   }
 
   Future<MatrixDetail> loadSingle(BigInt id) async {
-    String matrixPath = sprintf('assets/json/matrices/%d.json', [id]);
+    String matrixPath = sprintf('assets/json/matrices/%d.json', [id.toInt()]);
     var parsedItem = await
     readFromFile(matrixPath)
         .then((result) => json.decode(result))
         .then((jsonValue) => MatrixDetail.fromJson(jsonValue));
 
-    MatrixPreferences preferences = MatrixPreferences();
+    MatrixPreferences preferences = MatrixPreferences(id);
 
     var levels = await preferences.getChosenLevels(id);
 
     for (final item in parsedItem.items) {
+      for (KnowledgeLevel level in item.levels) {
 
-      for (final level in item.levels) {
-        if (levels.contains(level)) {
+        if (levels.contains(level.id.toString())) {
           level.isChecked = true;
+        } else {
+          level.isChecked = false;
         }
       }
     }

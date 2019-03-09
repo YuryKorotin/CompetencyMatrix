@@ -1,8 +1,11 @@
 import 'package:competency_matrix/repositories/matrix_repository.dart';
+import 'package:competency_matrix/utils/matrix_preferences.dart';
+import 'package:competency_matrix/vendor/barprogressindicator.dart';
 import 'package:competency_matrix/view/builders/matrix_detail_builder.dart';
 import 'package:competency_matrix/view/models/heading_item.dart';
 import 'package:competency_matrix/view/models/knowledge_item.dart';
 import 'package:flutter/material.dart';
+import 'package:progress_indicators/progress_indicators.dart';
 
 class KnowledgeListWidget extends StatefulWidget {
   KnowledgeListWidget(this.matrixId) : super();
@@ -14,26 +17,38 @@ class KnowledgeListWidget extends StatefulWidget {
 }
 
 class KnowledgeListState extends State<KnowledgeListWidget> {
-  final BigInt matrixId;
+  BigInt _matrixId;
   var _items;
   MatrixRepository matrixRepository;
+  MatrixPreferences matrixPreferences;
   MatrixDetailBuilder viewModelBuilder = MatrixDetailBuilder();
 
-  KnowledgeListState(this.matrixId)
+  KnowledgeListState(BigInt matrixId) {
+    this._matrixId = matrixId;
+    this.matrixPreferences = MatrixPreferences(_matrixId);
+  }
 
   @override
   void initState() {
     matrixRepository = MatrixRepository();
 
-    matrixRepository.loadSingle(this.matrixId).then((parsedItem) => setState(() {
+    matrixRepository.loadSingle(this._matrixId).then((parsedItem) => setState(() {
       this._items = viewModelBuilder.buildFromLoadedItem(parsedItem);
     }));
   }
 
-
-  @override
-  Widget build(BuildContext context) {
-    var widget = ListView.builder(
+  Widget buildContent() {
+    var widget;
+    if (this._items == null) {
+      widget = new Center(
+        child: new Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[JumpingDotsProgressIndicator(fontSize: 20.0)],
+        ),
+      ); // This trailing comma makes auto-formatting nicer for build methods.
+      return widget;
+    }
+    widget = ListView.builder(
       // Let the ListView know how many items it needs to build
       itemCount: _items.length,
       // Provide a builder function. This is where the magic happens! We'll
@@ -54,12 +69,28 @@ class KnowledgeListState extends State<KnowledgeListWidget> {
             subtitle: Text(item.description),
             value: item.isChecked,
             onChanged: (bool value) {
-              setState(() { _items[index].isChecked = !item.isChecked; });
+              setState(() {
+                _items[index].isChecked = value;
+                if(_items[index].isChecked) {
+                  matrixPreferences.addLevel(_items[index].id);
+                } else {
+                  matrixPreferences.removeLevel(_items[index].id);
+                }
+              });
             },
           );
         }
       },
     );
     return widget;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return new Scaffold(
+      body: new Center(
+        child: buildContent()
+      ),
+    );
   }
 }

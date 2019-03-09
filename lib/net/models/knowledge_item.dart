@@ -12,10 +12,15 @@ class KnowledgeItem {
   });
 
   factory KnowledgeItem.fromJson(Map<String, dynamic> json){
+
+    var levels = json['levels']as List;
+
+    List<KnowledgeLevel> levelList =
+    levels.map((i) => KnowledgeLevel.fromJson(i)).toList();
     return new KnowledgeItem(
         id : new BigInt.from(json["id"]),
         name: json['name'],
-        levels: json['levels'],
+        levels: levelList,
     );
   }
 }

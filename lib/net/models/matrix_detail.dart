@@ -12,10 +12,15 @@ class MatrixDetail {
   });
 
   factory MatrixDetail.fromJson(Map<String, dynamic> json){
+
+    var items = json['knowledge_items']as List;
+
+    List<KnowledgeItem> itemList =
+    items.map((i) => KnowledgeItem.fromJson(i)).toList();
     return new MatrixDetail(
         id : new BigInt.from(json["id"]),
         name: json['name'],
-        items: json['items'],
+        items: itemList,
     );
   }
 }
