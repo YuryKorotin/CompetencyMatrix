@@ -2,7 +2,7 @@ class KnowledgeLevel {
   final BigInt id;
   final String name;
   final String description;
-  final bool isChecked;
+  bool isChecked;
 
   KnowledgeLevel({
     this.id,

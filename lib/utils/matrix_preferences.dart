@@ -1,41 +1,39 @@
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MatrixPreferences {
-  final String _kNotificationsPrefs = "allowNotifications";
-  final String _kSortingOrderPrefs = "sortOrder";
+  final String _kLevelsPrefs = "levels";
 
-  /// ------------------------------------------------------------
-  /// Method that returns the user decision to allow notifications
-  /// ------------------------------------------------------------
-  Future<bool> getAllowsNotifications() async {
+  Future<List<BigInt>> getChosenLevels(BigInt matrixId) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    return prefs.getBool(_kNotificationsPrefs) ?? false;
+    List<BigInt> chosenLevels = List<BigInt>();
+
+    List<String> levels =
+        prefs.getStringList(_kLevelsPrefs + matrixId.toString()) ?? List<String>();
+    levels.forEach((element) {
+      chosenLevels.add(BigInt.from(int.tryParse(element) ?? 0));
+    });
+    
+    
+    return prefs.getStringList(_kLevelsPrefs) ?? List<BigInt>();
   }
 
-  /// ----------------------------------------------------------
-  /// Method that saves the user decision to allow notifications
-  /// ----------------------------------------------------------
-  Future<bool> setAllowsNotifications(bool value) async {
+  Future<bool> addLevel(BigInt value) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    return prefs.setBool(_kNotificationsPrefs, value);
+    List<String> levels = prefs.getStringList(_kLevelsPrefs) ?? List<String>();
+
+    levels.add(value.toString());
+
+    return prefs.setStringList(_kLevelsPrefs, levels);
   }
-
-  /// ------------------------------------------------------------
-  /// Method that returns the user decision on sorting order
-  /// ------------------------------------------------------------
-  Future<String> getSortingOrder() async {
+  Future<bool> removeLevel(BigInt value) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    return prefs.getString(_kSortingOrderPrefs) ?? 'name';
-  }
+    List<String> levels = prefs.getStringList(_kLevelsPrefs) ?? List<String>();
 
-  /// ----------------------------------------------------------
-  /// Method that saves the user decision on sorting order
-  /// ----------------------------------------------------------
-  Future<bool> setSortingOrder(String value) async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    levels.remove(value.toString());
 
-    return prefs.setString(_kSortingOrderPrefs, value);
+    return prefs.setStringList(_kLevelsPrefs, levels);
   }
 }
