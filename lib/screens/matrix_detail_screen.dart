@@ -23,7 +23,7 @@ class MatrixState extends State<MatrixDetailScreen> {
   MatrixState(@required this.matrixItem) {
     _children = [
       KnowledgeListWidget(matrixItem.id),
-      DiagramWidget(Colors.amber)
+      DiagramWidget(matrixItem.id)
     ];
   }
 
