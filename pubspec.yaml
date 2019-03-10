@@ -10,13 +10,14 @@ description: Application for tracking professional progress
 version: 0.1.1+2
 
 environment:
-  sdk: ">=2.0.0-dev.68.0 <3.0.0"
+  sdk: '>=2.1.0 <3.0.0'
 
 dependencies:
   flutter:
     sdk: flutter
   dartson: ^1.0.0-alpha+2
   flutter_circular_chart: ^0.1.0
+  charts_flutter: ^0.6.0
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
