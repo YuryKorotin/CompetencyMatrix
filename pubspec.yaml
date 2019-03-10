@@ -46,6 +46,7 @@ flutter:
   assets:
     - assets/json/
     - assets/json/matrices/
+
   #  - images/a_dot_burr.jpeg
   #  - images/a_dot_ham.jpeg
 

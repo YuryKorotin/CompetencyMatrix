@@ -31,8 +31,6 @@ class MatrixPreferences {
 
     levels.add(value.toString());
 
-    print(levels.length.toString());
-
     return prefs.setStringList(_matrixId.toString() + _kLevelsPrefs, levels);
   }
   Future<bool> removeLevel(BigInt value) async {
