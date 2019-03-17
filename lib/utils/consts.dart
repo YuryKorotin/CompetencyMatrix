@@ -10,6 +10,8 @@ class Consts {
   static const String SERIOUS_KNOWLEDGE_LEVEL = "n";
   static const String COMPLEX_KNOWLEDGE_LEVEL = "log(n)";
 
+  static const String DATABASE_NAME = "matrix.db";
+
   static const KNOWLEDGE_TO_HUMAN_MAP = {
     BASE_KNOWLEDGE_LEVEL: STUDENT_LEVEL,
     SIMPLE_KNOWLEDGE_LEVEL: BEGINNER_LEVEL,
