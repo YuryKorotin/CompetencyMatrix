@@ -5,13 +5,15 @@ class Matrix {
   final String name;
   final String description;
   final String category;
-  int progress;
+  final bool isEmbedded;
+  final int progress;
 
   Matrix({
     this.id,
     this.name,
     this.description,
     this.category,
+    this.isEmbedded,
     this.progress
   });
 
@@ -21,6 +23,7 @@ class Matrix {
         name: json['name'],
         description: json['description'],
         category: json['category'],
+        isEmbedded: json['embedded'],
         progress: json["progress"]
     );
   }

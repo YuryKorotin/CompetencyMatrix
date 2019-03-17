@@ -13,12 +13,14 @@ class MatrixItemBuilder {
         new BigInt.from(1),
         "Mobile programming",
         50,
-        "profi"));
+        "profi",
+        true));
     items.add(new MatrixItem.origin(
         new BigInt.from(2),
         "Web programming",
         15,
-        "beginner"));
+        "beginner",
+        true));
 
     items.add(new HeadingItem("English speaking"));
 
@@ -26,12 +28,14 @@ class MatrixItemBuilder {
         new BigInt.from(3),
         "Grammar",
         50,
-        "medium"));
+        "medium",
+        true));
     items.add(new MatrixItem.origin(
         new BigInt.from(3),
         "Speaking",
         25,
-        "starter"));
+        "starter",
+        true));
 
     return items;
   }
@@ -53,7 +57,8 @@ class MatrixItemBuilder {
           x.id,
           x.name,
           x.progress,
-          x.description));
+          x.description,
+          true));
     }
 
     return viewItems;

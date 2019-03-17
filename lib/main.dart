@@ -100,6 +100,8 @@ class _MyHomePageState extends State<MyHomePage> {
         } else if (item is MatrixItem) {
           int progress = item.progress;
           return ListTile(
+            trailing: getEditIcon(item),
+            //trailing: Icon(Icons.trip_origin),
             leading: CircularPercentIndicator(
               radius: 50.0,
               lineWidth: 10.0,
@@ -130,6 +132,14 @@ class _MyHomePageState extends State<MyHomePage> {
     );
 
     return widget;
+  }
+
+  Widget getEditIcon(MatrixItem matrix) {
+    if (matrix.isEmbedded) {
+      return null;
+    } else {
+      return Icon(Icons.edit);
+    }
   }
 
   void refresh() {

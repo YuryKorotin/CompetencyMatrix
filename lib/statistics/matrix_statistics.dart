@@ -50,7 +50,6 @@ class MatrixStatistics {
     for (KnowledgeItem item in items) {
       itemsCount++;
       var levels = item.levels;
-      var lastName = levels.first.name;
       for (KnowledgeLevel level in levels) {
         if (level.isChecked && level.name == levelToCount) {
           completedLevels++;
