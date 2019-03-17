@@ -184,7 +184,7 @@ class _MyHomePageState extends State<MyHomePage> {
             context,
             MaterialPageRoute(
               builder: (context) =>
-                  MatrixDetailCreationScreen(),
+                  MatrixDetailCreationScreen(() => refresh()),
             ),
           );
         },

@@ -55,7 +55,6 @@ class MatrixRepositoryDb{
               isEmbedded: false,
               progress: 0));
     }
-    print(matrices.length);
     return matrices;
   }
 
