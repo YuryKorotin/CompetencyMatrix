@@ -1,6 +1,6 @@
-import 'dart:convert';
-
 import 'package:competency_matrix/repositories/matrix_repository.dart';
+import 'package:competency_matrix/repositories/matrix_repository_db.dart';
+import 'package:competency_matrix/screens/matrix_detail_creation_screen.dart';
 import 'package:competency_matrix/utils/colors_provider.dart';
 import 'package:competency_matrix/vendor/barprogressindicator.dart';
 import 'package:competency_matrix/view/builders/matrix_item_builder.dart';
@@ -41,20 +41,27 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  var items;
-  MatrixRepository matrixRepository;
+  List<ListItem> items;
+  MatrixRepository matrixRepository = MatrixRepository();
+  MatrixRepositoryDb matrixDbRepository = MatrixRepositoryDb();
   MatrixItemBuilder viewModelBuilder = MatrixItemBuilder();
   ColorsProvider _colorsProvider = ColorsProvider();
 
   _MyHomePageState();
 
+  void loadItems() {
+    matrixRepository
+        .load()
+        .then((parsedItems) => setState(() {
+          this.items = viewModelBuilder.buildFromLoadedItems(parsedItems);
+        }))
+        .then((onValue) => matrixDbRepository.getMatrices())
+        .then((matrices) => this.items.addAll(viewModelBuilder.buildFromLoadedDbItems(matrices)));
+  }
+
   @override
   void initState() {
-    matrixRepository = MatrixRepository();
-
-    matrixRepository.load().then((parsedItems) => setState(() {
-          this.items = viewModelBuilder.buildFromLoadedItems(parsedItems);
-        }));
+    loadItems();
   }
 
   Widget buildContent() {
@@ -118,6 +125,9 @@ class _MyHomePageState extends State<MyHomePage> {
             title: Text(item.name),
             subtitle: Text("Progress is $progress%"),
             onTap: () {
+              if (!item.isEmbedded) {
+                return;
+              }
               Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -143,9 +153,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void refresh() {
-    matrixRepository.load().then((parsedItems) => setState(() {
-      this.items = viewModelBuilder.buildFromLoadedItems(parsedItems);
-    }));
+    loadItems();
   }
 
   @override
@@ -171,7 +179,15 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),*/
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) =>
+                  MatrixDetailCreationScreen(),
+            ),
+          );
+        },
         tooltip: 'Create new matrix',
         child: Icon(Icons.add),
       ),

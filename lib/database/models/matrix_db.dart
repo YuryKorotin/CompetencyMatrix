@@ -1,4 +1,4 @@
-class Matrix {
+class MatrixDb {
   final BigInt id;
   final String name;
   final String description;
@@ -6,7 +6,7 @@ class Matrix {
   final bool isEmbedded;
   final int progress;
 
-  Matrix(
+  MatrixDb(
       {this.id,
       this.name,
       this.description,

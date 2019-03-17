@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:io' as io;
-import 'package:competency_matrix/database/models/matrix.dart';
+import 'package:competency_matrix/database/models/matrix_db.dart';
 import 'package:competency_matrix/utils/consts.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
@@ -24,7 +24,7 @@ class MatrixRepositoryDb{
     return _db;
   }
 
-  //Creating a database with name test.dn in your directory
+  //Creating a database with name test.db in your directory
   initDb() async {
     io.Directory documentsDirectory = await getApplicationDocumentsDirectory();
     String path = join(documentsDirectory.path, Consts.DATABASE_NAME);
@@ -32,7 +32,7 @@ class MatrixRepositoryDb{
     return theDb;
   }
 
-  // Creating a table name Employee with fields
+  // Creating a table name Matrix with fields
   void _onCreate(Database db, int version) async {
     // When creating the db, create the table
     await db.execute(
@@ -40,30 +40,30 @@ class MatrixRepositoryDb{
     print("Created tables");
   }
 
-  // Retrieving employees from Employee Tables
-  Future<List<Matrix>> getMatrices() async {
+  // Retrieving matrices from Matrix Tables
+  Future<List<MatrixDb>> getMatrices() async {
     var dbClient = await db;
     List<Map> list = await dbClient.rawQuery('SELECT * FROM $MATRIX_TABLE_NAME');
-    List<Matrix> matrices = new List();
+    List<MatrixDb> matrices = new List();
     for (int i = 0; i < list.length; i++) {
       matrices.add(
-          new Matrix(
-              id: list[i][ID_COLUMN_NAME],
+          new MatrixDb(
+              id: BigInt.from(list[i][ID_COLUMN_NAME]),
               name: list[i][NAME_COLUMN_NAME],
               category: list[i][CATEGORY_COLUMN_NAME],
               description: list[i][DESCRITPION_COLUMN_NAME],
-              isEmbedded: true,
+              isEmbedded: false,
               progress: 0));
     }
     print(matrices.length);
     return matrices;
   }
 
-  void saveEmployee(Matrix matrix) async {
+  void saveMatrix(MatrixDb matrix) async {
     var dbClient = await db;
     await dbClient.transaction((txn) async {
       return await txn.rawInsert(
-          'INSERT INTO Employee($NAME_COLUMN_NAME, $CATEGORY_COLUMN_NAME, $DESCRITPION_COLUMN_NAME) VALUES(' +
+          'INSERT INTO $MATRIX_TABLE_NAME($NAME_COLUMN_NAME, $CATEGORY_COLUMN_NAME, $DESCRITPION_COLUMN_NAME) VALUES(' +
               '\'' +
               matrix.name +
               '\'' +
