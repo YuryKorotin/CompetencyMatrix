@@ -1,6 +1,7 @@
-import 'dart:convert';
-
 import 'package:competency_matrix/repositories/matrix_repository.dart';
+import 'package:competency_matrix/repositories/matrix_repository_db.dart';
+import 'package:competency_matrix/screens/matrix_detail_creation_screen.dart';
+import 'package:competency_matrix/utils/colors_provider.dart';
 import 'package:competency_matrix/vendor/barprogressindicator.dart';
 import 'package:competency_matrix/view/builders/matrix_item_builder.dart';
 import 'package:competency_matrix/view/models/heading_item.dart';
@@ -9,6 +10,7 @@ import 'package:competency_matrix/view/models/matrix_item.dart';
 import 'package:competency_matrix/screens/matrix_detail_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
+import 'package:percent_indicator/percent_indicator.dart';
 
 void main() {
   runApp(CompetencyMatrixApp());
@@ -39,19 +41,27 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  var items;
-  MatrixRepository matrixRepository;
+  List<ListItem> items;
+  MatrixRepository matrixRepository = MatrixRepository();
+  MatrixRepositoryDb matrixDbRepository = MatrixRepositoryDb();
   MatrixItemBuilder viewModelBuilder = MatrixItemBuilder();
+  ColorsProvider _colorsProvider = ColorsProvider();
 
   _MyHomePageState();
 
+  void loadItems() {
+    matrixRepository
+        .load()
+        .then((parsedItems) => setState(() {
+          this.items = viewModelBuilder.buildFromLoadedItems(parsedItems);
+        }))
+        .then((onValue) => matrixDbRepository.getMatrices())
+        .then((matrices) => this.items.addAll(viewModelBuilder.buildFromLoadedDbItems(matrices)));
+  }
+
   @override
   void initState() {
-    matrixRepository = MatrixRepository();
-
-    matrixRepository.load().then((parsedItems) => setState(() {
-          this.items = viewModelBuilder.buildFromLoadedItems(parsedItems);
-        }));
+    loadItems();
   }
 
   Widget buildContent() {
@@ -97,14 +107,32 @@ class _MyHomePageState extends State<MyHomePage> {
         } else if (item is MatrixItem) {
           int progress = item.progress;
           return ListTile(
+            trailing: getEditIcon(item),
+            //trailing: Icon(Icons.trip_origin),
+            leading: CircularPercentIndicator(
+              radius: 50.0,
+              lineWidth: 10.0,
+              percent: progress / 100,
+              center: new Icon(
+                Icons.person_pin,
+                size: 30.0,
+                color: _colorsProvider.getColorByProgress(progress),
+              ),
+              backgroundColor: Colors.grey,
+              progressColor: _colorsProvider.getColorByProgress(progress),
+            ),
+            //leading: const Icon(Icons.flight_land),
             title: Text(item.name),
             subtitle: Text("Progress is $progress%"),
             onTap: () {
+              if (!item.isEmbedded) {
+                return;
+              }
               Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (context) =>
-                      MatrixDetailScreen(items[index]),
+                      MatrixDetailScreen(items[index], () => refresh()),
                 ),
               );
             },
@@ -114,6 +142,18 @@ class _MyHomePageState extends State<MyHomePage> {
     );
 
     return widget;
+  }
+
+  Widget getEditIcon(MatrixItem matrix) {
+    if (matrix.isEmbedded) {
+      return null;
+    } else {
+      return Icon(Icons.edit);
+    }
+  }
+
+  void refresh() {
+    loadItems();
   }
 
   @override
@@ -139,7 +179,15 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),*/
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) =>
+                  MatrixDetailCreationScreen(() => refresh()),
+            ),
+          );
+        },
         tooltip: 'Create new matrix',
         child: Icon(Icons.add),
       ),

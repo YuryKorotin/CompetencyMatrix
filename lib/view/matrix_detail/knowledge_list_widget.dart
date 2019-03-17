@@ -1,6 +1,5 @@
 import 'package:competency_matrix/repositories/matrix_repository.dart';
 import 'package:competency_matrix/utils/matrix_preferences.dart';
-import 'package:competency_matrix/vendor/barprogressindicator.dart';
 import 'package:competency_matrix/view/builders/matrix_detail_builder.dart';
 import 'package:competency_matrix/view/models/heading_item.dart';
 import 'package:competency_matrix/view/models/knowledge_item.dart';
@@ -8,12 +7,13 @@ import 'package:flutter/material.dart';
 import 'package:progress_indicators/progress_indicators.dart';
 
 class KnowledgeListWidget extends StatefulWidget {
-  KnowledgeListWidget(this.matrixId) : super();
+  KnowledgeListWidget(this.matrixId, this.updateMatrices) : super();
 
   final BigInt matrixId;
+  final void Function() updateMatrices;
 
   @override
-  KnowledgeListState createState() => KnowledgeListState(this.matrixId);
+  KnowledgeListState createState() => KnowledgeListState(this.matrixId, this.updateMatrices);
 }
 
 class KnowledgeListState extends State<KnowledgeListWidget> {
@@ -22,8 +22,9 @@ class KnowledgeListState extends State<KnowledgeListWidget> {
   MatrixRepository matrixRepository;
   MatrixPreferences matrixPreferences;
   MatrixDetailBuilder viewModelBuilder = MatrixDetailBuilder();
+  final void Function() updateMatrices;
 
-  KnowledgeListState(BigInt matrixId) {
+  KnowledgeListState(BigInt matrixId, this.updateMatrices) {
     this._matrixId = matrixId;
     this.matrixPreferences = MatrixPreferences(_matrixId);
   }
@@ -69,6 +70,7 @@ class KnowledgeListState extends State<KnowledgeListWidget> {
             subtitle: Text(item.description),
             value: item.isChecked,
             onChanged: (bool value) {
+              updateMatrices();
               setState(() {
                 _items[index].isChecked = value;
                 if(_items[index].isChecked) {

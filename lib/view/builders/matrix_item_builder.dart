@@ -1,3 +1,4 @@
+import 'package:competency_matrix/database/models/matrix_db.dart';
 import 'package:competency_matrix/net/models/matrix.dart';
 import 'package:competency_matrix/view/models/heading_item.dart';
 import 'package:competency_matrix/view/models/list_item.dart';
@@ -13,12 +14,14 @@ class MatrixItemBuilder {
         new BigInt.from(1),
         "Mobile programming",
         50,
-        "profi"));
+        "profi",
+        true));
     items.add(new MatrixItem.origin(
         new BigInt.from(2),
         "Web programming",
         15,
-        "beginner"));
+        "beginner",
+        true));
 
     items.add(new HeadingItem("English speaking"));
 
@@ -26,12 +29,14 @@ class MatrixItemBuilder {
         new BigInt.from(3),
         "Grammar",
         50,
-        "medium"));
+        "medium",
+        true));
     items.add(new MatrixItem.origin(
         new BigInt.from(3),
         "Speaking",
         25,
-        "starter"));
+        "starter",
+        true));
 
     return items;
   }
@@ -53,7 +58,36 @@ class MatrixItemBuilder {
           x.id,
           x.name,
           x.progress,
-          x.description));
+          x.description,
+          true));
+    }
+
+    return viewItems;
+  }
+
+  List<ListItem> buildFromLoadedDbItems(List<MatrixDb> items) {
+    List<ListItem> viewItems = new List();
+
+    if (items.isEmpty) {
+      return viewItems;
+    }
+
+    String currentCategory = items.first.category;
+    HeadingItem header = HeadingItem(currentCategory);
+    viewItems.add(header);
+
+    for (final x in items) {
+      if (x.category != currentCategory) {
+        currentCategory = x.category;
+        header = HeadingItem(currentCategory);
+        viewItems.add(header);
+      }
+      viewItems.add(new MatrixItem.origin(
+          x.id,
+          x.name,
+          x.progress,
+          x.description,
+          false));
     }
 
     return viewItems;

@@ -6,12 +6,13 @@ import 'package:flutter/material.dart';
 class MatrixDetailScreen extends StatefulWidget {
 
   final MatrixItem matrixItem;
+  final void Function() updateMatrices;
 
-  MatrixDetailScreen(this.matrixItem);
+  MatrixDetailScreen(this.matrixItem, this.updateMatrices);
 
   @override
   State<StatefulWidget> createState() {
-    return MatrixState(this.matrixItem);
+    return MatrixState(this.matrixItem, this.updateMatrices);
   }
 
 }
@@ -19,10 +20,11 @@ class MatrixState extends State<MatrixDetailScreen> {
   int _currentIndex = 0;
   List<Widget> _children;
   final MatrixItem matrixItem;
+  final void Function() updateMatrices;
 
-  MatrixState(@required this.matrixItem) {
+  MatrixState(@required this.matrixItem, this.updateMatrices) {
     _children = [
-      KnowledgeListWidget(matrixItem.id),
+      KnowledgeListWidget(matrixItem.id, this.updateMatrices),
       DiagramWidget(matrixItem.id)
     ];
   }

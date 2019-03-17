@@ -33,6 +33,7 @@ class MatrixPreferences {
 
     return prefs.setStringList(_matrixId.toString() + _kLevelsPrefs, levels);
   }
+
   Future<bool> removeLevel(BigInt value) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 

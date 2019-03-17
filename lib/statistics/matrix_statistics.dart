@@ -4,7 +4,6 @@ import 'package:competency_matrix/net/models/knowledge_item.dart';
 import 'package:competency_matrix/net/models/knowledge_level.dart';
 import 'package:competency_matrix/repositories/matrix_repository.dart';
 import 'package:competency_matrix/utils/consts.dart';
-import 'package:competency_matrix/utils/matrix_preferences.dart';
 
 class MatrixStatistics {
   var _matrixId;
@@ -38,5 +37,26 @@ class MatrixStatistics {
     return statistics;
   }
 
+  Future<int> getMatrixProgress() async {
+    var matrixDescription = await matrixRepository.loadSingle(this._matrixId);
+    var items = matrixDescription.items;
 
+    //Progress is taken only for serious level
+    var progress = 0;
+    var levelToCount = Consts.COMPLEX_KNOWLEDGE_LEVEL;
+    int itemsCount = 0;
+    var completedLevels = 0;
+
+    for (KnowledgeItem item in items) {
+      itemsCount++;
+      var levels = item.levels;
+      for (KnowledgeLevel level in levels) {
+        if (level.isChecked && level.name == levelToCount) {
+          completedLevels++;
+        }
+      }
+    }
+    progress = (completedLevels / itemsCount * 100).round();
+    return progress;
+  }
 }
