@@ -9,6 +9,7 @@ import 'package:competency_matrix/view/models/matrix_item.dart';
 import 'package:competency_matrix/screens/matrix_detail_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
+import 'package:percent_indicator/percent_indicator.dart';
 
 void main() {
   runApp(CompetencyMatrixApp());
@@ -97,6 +98,19 @@ class _MyHomePageState extends State<MyHomePage> {
         } else if (item is MatrixItem) {
           int progress = item.progress;
           return ListTile(
+            leading: CircularPercentIndicator(
+              radius: 50.0,
+              lineWidth: 10.0,
+              percent: progress / 100,
+              center: new Icon(
+                Icons.person_pin,
+                size: 20.0,
+                color: Colors.blue,
+              ),
+              backgroundColor: Colors.grey,
+              progressColor: Colors.blue,
+            ),
+            //leading: const Icon(Icons.flight_land),
             title: Text(item.name),
             subtitle: Text("Progress is $progress%"),
             onTap: () {
