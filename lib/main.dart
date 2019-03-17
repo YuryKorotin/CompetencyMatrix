@@ -120,7 +120,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 context,
                 MaterialPageRoute(
                   builder: (context) =>
-                      MatrixDetailScreen(items[index]),
+                      MatrixDetailScreen(items[index], () => refresh()),
                 ),
               );
             },
@@ -130,6 +130,12 @@ class _MyHomePageState extends State<MyHomePage> {
     );
 
     return widget;
+  }
+
+  void refresh() {
+    matrixRepository.load().then((parsedItems) => setState(() {
+      this.items = viewModelBuilder.buildFromLoadedItems(parsedItems);
+    }));
   }
 
   @override

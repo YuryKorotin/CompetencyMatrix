@@ -5,7 +5,7 @@ class Matrix {
   final String name;
   final String description;
   final String category;
-  final int progress;
+  int progress;
 
   Matrix({
     this.id,
