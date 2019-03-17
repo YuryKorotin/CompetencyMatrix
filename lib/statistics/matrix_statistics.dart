@@ -58,7 +58,6 @@ class MatrixStatistics {
       }
     }
     progress = (completedLevels / itemsCount * 100).round();
-    print(progress);
     return progress;
   }
 }
