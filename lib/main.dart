@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:competency_matrix/repositories/matrix_repository.dart';
+import 'package:competency_matrix/utils/colors_provider.dart';
 import 'package:competency_matrix/vendor/barprogressindicator.dart';
 import 'package:competency_matrix/view/builders/matrix_item_builder.dart';
 import 'package:competency_matrix/view/models/heading_item.dart';
@@ -43,6 +44,7 @@ class _MyHomePageState extends State<MyHomePage> {
   var items;
   MatrixRepository matrixRepository;
   MatrixItemBuilder viewModelBuilder = MatrixItemBuilder();
+  ColorsProvider _colorsProvider = ColorsProvider();
 
   _MyHomePageState();
 
@@ -104,11 +106,11 @@ class _MyHomePageState extends State<MyHomePage> {
               percent: progress / 100,
               center: new Icon(
                 Icons.person_pin,
-                size: 20.0,
-                color: Colors.blue,
+                size: 30.0,
+                color: _colorsProvider.getColorByProgress(progress),
               ),
               backgroundColor: Colors.grey,
-              progressColor: Colors.blue,
+              progressColor: _colorsProvider.getColorByProgress(progress),
             ),
             //leading: const Icon(Icons.flight_land),
             title: Text(item.name),
