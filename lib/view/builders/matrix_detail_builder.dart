@@ -16,10 +16,9 @@ class MatrixDetailBuilder {
       for (final level in item.levels) {
         var itemName = level.name;
         if (Consts.KNOWLEDGE_TO_HUMAN_MAP[level.name] != null) {
-          itemName = Consts.KNOWLEDGE_TO_HUMAN_MAP[level.name]
+          itemName = Consts.KNOWLEDGE_TO_HUMAN_MAP[level.name];
         }
         viewItems.add(
-
             new KnowledgeItem.origin(
                 level.id,
                 itemName,

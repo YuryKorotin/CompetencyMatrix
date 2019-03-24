@@ -77,7 +77,7 @@ class KnowledgeListState extends State<KnowledgeListWidget> {
                 _items[index].isChecked = value;
                 if(_items[index].isChecked) {
                   matrixPreferences.addLevel(_items[index].id);
-                  checkPreviousLevelsIfNeed(index);
+                  //checkPreviousLevelsIfNeed(index);
                 } else {
                   matrixPreferences.removeLevel(_items[index].id);
                 }
