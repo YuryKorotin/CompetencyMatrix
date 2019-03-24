@@ -1,3 +1,4 @@
+import 'package:competency_matrix/interactors/matrix_detail_interactor.dart';
 import 'package:competency_matrix/repositories/matrix_repository.dart';
 import 'package:competency_matrix/utils/matrix_preferences.dart';
 import 'package:competency_matrix/view/builders/matrix_detail_builder.dart';
@@ -19,6 +20,7 @@ class KnowledgeListWidget extends StatefulWidget {
 class KnowledgeListState extends State<KnowledgeListWidget> {
   BigInt _matrixId;
   var _items;
+  MatrixDetailInteractor interactor = MatrixDetailInteractor();
   MatrixRepository matrixRepository;
   MatrixPreferences matrixPreferences;
   MatrixDetailBuilder viewModelBuilder = MatrixDetailBuilder();
@@ -75,6 +77,7 @@ class KnowledgeListState extends State<KnowledgeListWidget> {
                 _items[index].isChecked = value;
                 if(_items[index].isChecked) {
                   matrixPreferences.addLevel(_items[index].id);
+                  checkPreviousLevelsIfNeed(index);
                 } else {
                   matrixPreferences.removeLevel(_items[index].id);
                 }
@@ -94,5 +97,12 @@ class KnowledgeListState extends State<KnowledgeListWidget> {
         child: buildContent()
       ),
     );
+  }
+
+  void checkPreviousLevelsIfNeed(int index) {
+    KnowledgeItem chosenItem = this._items;
+    interactor.getItemIdsToCheck(this._matrixId).then((ids) => setState(() {
+      
+    }));
   }
 }

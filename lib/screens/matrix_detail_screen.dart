@@ -16,6 +16,7 @@ class MatrixDetailScreen extends StatefulWidget {
   }
 
 }
+
 class MatrixState extends State<MatrixDetailScreen> {
   int _currentIndex = 0;
   List<Widget> _children;
@@ -29,19 +30,6 @@ class MatrixState extends State<MatrixDetailScreen> {
     ];
   }
 
-  /*@override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(matrixItem.name),
-      ),
-      body: Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Text(matrixItem.description),
-        child:
-      ),
-    );
-  }*/
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
@@ -64,14 +52,6 @@ class MatrixState extends State<MatrixDetailScreen> {
           )
         ],
       ),
-      /*body: new Center(
-        child: new AnimatedCircularChart(
-          key: _chartKey,
-          size: _chartSize,
-          initialChartData: _buildRandomKnowledgeData(),
-          chartType: CircularChartType.Radial,
-        ),
-      ),*/
     );
   }
   void onTabTapped(int index) {
