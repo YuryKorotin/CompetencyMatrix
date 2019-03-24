@@ -102,7 +102,7 @@ class KnowledgeListState extends State<KnowledgeListWidget> {
   void checkPreviousLevelsIfNeed(int index) {
     KnowledgeItem chosenItem = this._items;
     interactor.getItemIdsToCheck(this._matrixId).then((ids) => setState(() {
-      
+
     }));
   }
 }
