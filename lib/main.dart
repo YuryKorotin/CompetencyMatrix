@@ -10,6 +10,7 @@ import 'package:competency_matrix/view/models/heading_item.dart';
 import 'package:competency_matrix/view/models/list_item.dart';
 import 'package:competency_matrix/view/models/matrix_item.dart';
 import 'package:competency_matrix/screens/matrix_detail_screen.dart';
+import 'package:competency_matrix/view/swipe_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:percent_indicator/percent_indicator.dart';
@@ -109,43 +110,69 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
           );
         } else if (item is MatrixItem) {
-          int progress = item.progress;
-          return ListTile(
-            trailing: getEditIcon(item),
-            //trailing: Icon(Icons.trip_origin),
-            leading: CircularPercentIndicator(
-              radius: 50.0,
-              lineWidth: 10.0,
-              percent: progress / 100,
-              center: new Icon(
-                Icons.person_pin,
-                size: 30.0,
-                color: _colorsProvider.getColorByProgress(progress),
-              ),
-              backgroundColor: Colors.grey,
-              progressColor: _colorsProvider.getColorByProgress(progress),
-            ),
-            //leading: const Icon(Icons.flight_land),
-            title: Text(item.name),
-            subtitle: Text("Progress is $progress%"),
-            onTap: () {
-              if (!item.isEmbedded) {
-                return;
-              }
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) =>
-                      MatrixDetailScreen(items[index], () => refresh()),
-                ),
-              );
-            },
-          );
+          return buildSwipableItem(index, item);
         }
       },
     );
 
     return widget;
+  }
+
+  Widget buildSwipableItem(int index, MatrixItem item) {
+    int progress = item.progress;
+
+    var itemContentWidget = ListTile(
+        trailing: getEditIcon(item),
+        leading: CircularPercentIndicator(
+          radius: 50.0,
+          lineWidth: 10.0,
+          percent: progress / 100,
+          center: new Icon(
+            Icons.person_pin,
+            size: 30.0,
+            color: _colorsProvider.getColorByProgress(progress),
+          ),
+          backgroundColor: Colors.grey,
+          progressColor: _colorsProvider.getColorByProgress(progress),
+        ),
+        //leading: const Icon(Icons.flight_land),
+        title: Text(item.name),
+        subtitle: Text("Progress is $progress%"),
+        onTap: () {
+          if (!item.isEmbedded) {
+            return;
+          }
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) =>
+                  MatrixDetailScreen(items[index], () => refresh()),
+            ),
+          );
+        });
+
+    if(item.isEmbedded) {
+      return itemContentWidget;
+    }
+
+    return new OnSlide(
+      items: <ActionItems>[
+
+        new ActionItems(icon: new IconButton(icon: new Icon(Icons.delete), onPressed: () {}, color: Colors.red,
+        ), onPress: (){},  backgroudColor: Colors.grey),
+        new ActionItems(icon: new IconButton( icon: new Icon(Icons.mode_edit),  onPressed: () {},color: Colors.blue,
+        ), onPress: (){},  backgroudColor: Colors.grey),
+        //new ActionItems(icon: new IconButton(  icon: new Icon(Icons.bookmark),
+        //  onPressed: () {}, color: Colors.orange,
+        //), onPress: (){},  backgroudColor: Colors.blueGrey),
+      ],
+      child: new Container(
+          padding: const EdgeInsets.only(top:10.0),
+          width: 200.0,
+          height: 80.0,
+          child: itemContentWidget,
+          )
+      );
   }
 
   Widget getEditIcon(MatrixItem matrix) {
@@ -162,7 +189,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
           );
         },
-        child: Icon(Icons.edit),
+        child: Icon(Icons.ac_unit),
       );
     }
   }
