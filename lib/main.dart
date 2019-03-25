@@ -1,6 +1,8 @@
+import 'package:competency_matrix/net/models/matrix.dart';
 import 'package:competency_matrix/repositories/matrix_repository.dart';
 import 'package:competency_matrix/repositories/matrix_repository_db.dart';
 import 'package:competency_matrix/screens/matrix_detail_creation_screen.dart';
+import 'package:competency_matrix/screens/matrix_editable_detail_screen.dart';
 import 'package:competency_matrix/utils/colors_provider.dart';
 import 'package:competency_matrix/vendor/barprogressindicator.dart';
 import 'package:competency_matrix/view/builders/matrix_item_builder.dart';
@@ -42,6 +44,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   List<ListItem> items;
+  List<Matrix> _originItems;
   MatrixRepository matrixRepository = MatrixRepository();
   MatrixRepositoryDb matrixDbRepository = MatrixRepositoryDb();
   MatrixItemBuilder viewModelBuilder = MatrixItemBuilder();
@@ -54,6 +57,7 @@ class _MyHomePageState extends State<MyHomePage> {
         .load()
         .then((parsedItems) => setState(() {
           this.items = viewModelBuilder.buildFromLoadedItems(parsedItems);
+          this._originItems = parsedItems;
         }))
         .then((onValue) => matrixDbRepository.getMatrices())
         .then((matrices) => this.items.addAll(viewModelBuilder.buildFromLoadedDbItems(matrices)));
@@ -148,7 +152,18 @@ class _MyHomePageState extends State<MyHomePage> {
     if (matrix.isEmbedded) {
       return null;
     } else {
-      return Icon(Icons.edit);
+      return GestureDetector(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) =>
+                  MatrixEditableDetailScreen(matrix, () => refresh()),
+            ),
+          );
+        },
+        child: Icon(Icons.edit),
+      );
     }
   }
 
@@ -184,7 +199,7 @@ class _MyHomePageState extends State<MyHomePage> {
             context,
             MaterialPageRoute(
               builder: (context) =>
-                  MatrixDetailCreationScreen(() => refresh()),
+                  MatrixDetailCreationScreen(() => refresh(), findNewId()),
             ),
           );
         },
@@ -192,5 +207,16 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Icon(Icons.add),
       ),
     );
+  }
+
+  BigInt findNewId() {
+    var maxId = this._originItems.first.id;
+
+    for(Matrix matrix in this._originItems) {
+      if (maxId < matrix.id) {
+        maxId = matrix.id;
+      }
+    }
+    return maxId;
   }
 }

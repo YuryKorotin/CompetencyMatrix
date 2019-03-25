@@ -5,17 +5,18 @@ import 'package:flutter/material.dart';
 class MatrixDetailCreationScreen extends StatefulWidget {
 
   final void Function() updateMatrices;
-  MatrixDetailCreationScreen(this.updateMatrices);
+  final BigInt newId;
+  MatrixDetailCreationScreen(this.updateMatrices, this.newId);
 
   @override
   State<StatefulWidget> createState() {
-    return MatrixCreationState(this.updateMatrices);
+    return MatrixCreationState(this.updateMatrices, this.newId);
   }
 
 }
 class MatrixCreationState extends State<MatrixDetailCreationScreen> {
 
-  MatrixCreationState(this.updateMatrices);
+  MatrixCreationState(this.updateMatrices, this.newId);
 
   MatrixDb matrix = new MatrixDb(id: BigInt.from(0), name: "",  description: "", category: "", isEmbedded: false, progress: 0);
 
@@ -25,6 +26,7 @@ class MatrixCreationState extends State<MatrixDetailCreationScreen> {
   final scaffoldKey = new GlobalKey<ScaffoldState>();
   final formKey = new GlobalKey<FormState>();
   final void Function() updateMatrices;
+  final BigInt newId;
 
   @override
   Widget build(BuildContext context) {
@@ -99,7 +101,7 @@ class MatrixCreationState extends State<MatrixDetailCreationScreen> {
       return null;
     }
     var matrix = MatrixDb(
-        id: BigInt.from(0),
+        id: newId + BigInt.from(1),
         name: name,
         description: description,
         category: category,
