@@ -16,7 +16,7 @@ class MatrixStatistics {
 
   Future<HashMap<String, int>> getLevelsStatistics() async {
     var matrixDescription = await matrixRepository.loadSingle(this._matrixId);
-    var items = matrixDescription.items;
+    var items = matrixDescription.matrixDetail.items;
 
     var statistics = HashMap<String, int>();
     statistics[Consts.BASE_KNOWLEDGE_LEVEL] = 0;
@@ -39,7 +39,7 @@ class MatrixStatistics {
 
   Future<int> getMatrixProgress() async {
     var matrixDescription = await matrixRepository.loadSingle(this._matrixId);
-    var items = matrixDescription.items;
+    var items = matrixDescription.matrixDetail.items;
 
     //Progress is taken only for serious level
     var progress = 0;
