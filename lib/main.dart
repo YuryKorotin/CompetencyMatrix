@@ -4,6 +4,7 @@ import 'package:competency_matrix/repositories/matrix_repository_db.dart';
 import 'package:competency_matrix/screens/matrix_detail_creation_screen.dart';
 import 'package:competency_matrix/screens/matrix_editable_detail_screen.dart';
 import 'package:competency_matrix/utils/colors_provider.dart';
+import 'package:competency_matrix/utils/dialog_helper.dart';
 import 'package:competency_matrix/vendor/barprogressindicator.dart';
 import 'package:competency_matrix/view/builders/matrix_item_builder.dart';
 import 'package:competency_matrix/view/models/heading_item.dart';
@@ -119,6 +120,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Widget buildSwipableItem(int index, MatrixItem item) {
+    DialogHelper helper = new DialogHelper();
     int progress = item.progress;
 
     var itemContentWidget = ListTile(
@@ -157,10 +159,24 @@ class _MyHomePageState extends State<MyHomePage> {
 
     return new OnSlide(
       items: <ActionItems>[
-
-        new ActionItems(icon: new IconButton(icon: new Icon(Icons.delete), onPressed: () {}, color: Colors.red,
-        ), onPress: (){},  backgroudColor: Colors.grey),
-        new ActionItems(icon: new IconButton( icon: new Icon(Icons.mode_edit),  onPressed: () {},color: Colors.blue,
+        new ActionItems(
+            icon: new IconButton(
+              icon: new Icon(Icons.delete),
+              onPressed: () {
+              },
+              color: Colors.red,
+        ), onPress: (){
+          helper.showQuestionDialog(
+              context,
+                  (){},
+              "Attention",
+              "Do you really want to delete item?");
+        },  backgroudColor: Colors.grey),
+        new ActionItems(
+            icon: new IconButton(
+              icon: new Icon(Icons.mode_edit),
+              onPressed: () {},
+              color: Colors.blue,
         ), onPress: (){},  backgroudColor: Colors.grey),
         //new ActionItems(icon: new IconButton(  icon: new Icon(Icons.bookmark),
         //  onPressed: () {}, color: Colors.orange,

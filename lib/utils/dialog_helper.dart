@@ -19,6 +19,13 @@ class DialogHelper {
               child: new Text("Yes"),
               onPressed: () {
                 resultAction();
+                Navigator.of(context).pop();
+              },
+            ),
+            new FlatButton(
+              child: new Text("No"),
+              onPressed: () {
+                Navigator.of(context).pop();
               },
             ),
           ],
