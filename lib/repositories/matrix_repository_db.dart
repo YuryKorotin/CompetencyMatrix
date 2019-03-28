@@ -7,7 +7,9 @@ import 'package:sqflite/sqflite.dart';
 import 'package:path_provider/path_provider.dart';
 
 class MatrixRepositoryDb{
-  static const String MATRIX_TABLE_NAME = "Matrix";
+  static const String MATRIX_TABLE_NAME = "matrices";
+  static const String MATRIX_DETAIL_TABLE_NAME = "matrix_details";
+  static const String KNOWLEDGE_ITEMS_TABLE_NAME = "knowlede_items";
 
   static const String ID_COLUMN_NAME = "id";
   static const String NAME_COLUMN_NAME = "name";
