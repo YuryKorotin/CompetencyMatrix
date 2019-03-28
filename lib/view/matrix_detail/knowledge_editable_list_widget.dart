@@ -2,6 +2,7 @@ import 'dart:collection';
 
 import 'package:competency_matrix/interactors/matrix_detail_interactor.dart';
 import 'package:competency_matrix/repositories/matrix_repository.dart';
+import 'package:competency_matrix/repositories/matrix_repository_db.dart';
 import 'package:competency_matrix/utils/matrix_preferences.dart';
 import 'package:competency_matrix/view/builders/matrix_detail_builder.dart';
 import 'package:competency_matrix/view/models/heading_item.dart';
@@ -28,7 +29,7 @@ class KnowledgeEditableListState extends State<KnowledgeEditableListWidget> {
   HashMap<BigInt, List<BigInt>> _levelSchemeToUncheck;
 
   MatrixDetailInteractor interactor = MatrixDetailInteractor();
-  MatrixRepository matrixRepository = MatrixRepository();
+  MatrixRepositoryDb matrixRepository = MatrixRepositoryDb();
   MatrixPreferences matrixPreferences;
   MatrixDetailBuilder viewModelBuilder = MatrixDetailBuilder();
   final void Function() updateMatrices;
@@ -43,12 +44,12 @@ class KnowledgeEditableListState extends State<KnowledgeEditableListWidget> {
   void initState() {
     print(this._matrixId);
     try {
-      matrixRepository.loadSingle(this._matrixId).then((parsedItem) =>
+      matrixRepository.loadSingle(this._matrixId).then((loadedItem) =>
           setState(() {
             this._items =
-                viewModelBuilder.buildFromLoadedItem(parsedItem.matrixDetail);
-            this._levelSchemeToCheck = parsedItem.dependentItemsForCheck;
-            this._levelSchemeToUncheck = parsedItem.dependentItemsForUncheck;
+                viewModelBuilder.buildFromDbItem(loadedItem.matrixDetail);
+                this._levelSchemeToCheck = loadedItem.dependentItemsForCheck;
+                this._levelSchemeToUncheck = loadedItem.dependentItemsForUncheck;
           }));
     } catch (e) {
       _errorHasOccured = true;

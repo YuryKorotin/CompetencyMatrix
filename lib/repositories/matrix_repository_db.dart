@@ -1,18 +1,22 @@
 import 'dart:async';
+import 'dart:collection';
 import 'dart:io' as io;
 import 'package:competency_matrix/database/models/knowledge_db.dart';
 import 'package:competency_matrix/database/models/level_db.dart';
 import 'package:competency_matrix/database/models/matrix_db.dart';
 import 'package:competency_matrix/database/models/matrix_detaildb.dart';
+import 'package:competency_matrix/repositories/matrix_detail_db_result.dart';
 import 'package:competency_matrix/utils/consts.dart';
+import 'package:competency_matrix/utils/matrix_preferences.dart';
 import 'package:path/path.dart';
+import 'package:sprintf/sprintf.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path_provider/path_provider.dart';
 
 class MatrixRepositoryDb{
   static const String MATRIX_TABLE_NAME = "matrices";
   static const String MATRIX_DETAIL_TABLE_NAME = "matrix_details";
-  static const String KNOWLEDGE_ITEMS_TABLE_NAME = "knowlede_items";
+  static const String KNOWLEDGE_ITEMS_TABLE_NAME = "knowledge_items";
   static const String LEVELS_TABLE_NAME = "levels";
 
   static const String ID_COLUMN_NAME = "id";
@@ -64,7 +68,7 @@ class MatrixRepositoryDb{
         """CREATE TABLE $LEVELS_TABLE_NAME
         ($ID_COLUMN_NAME INTEGER PRIMARY KEY, 
         $NAME_COLUMN_NAME TEXT, 
-        $DESCRITPION_COLUMN_NAME TEXT
+        $DESCRITPION_COLUMN_NAME TEXT,
         $KNOWLEDGE_ITEM_ID_COLUMN_NAME INTEGER NOT NULL,
         FOREIGN KEY ($KNOWLEDGE_ITEM_ID_COLUMN_NAME) 
         REFERENCES $KNOWLEDGE_ITEMS_TABLE_NAME($ID_COLUMN_NAME)
@@ -130,6 +134,52 @@ class MatrixRepositoryDb{
       knowledgeDbItems: await getKnowledgeItems(BigInt.from(list[0][ID_COLUMN_NAME])));
 
     return matrix;
+  }
+
+  Future<MatrixDetailDbResult> loadSingle(BigInt id) async {
+    var parsedItem = await getMatrix(id);
+
+    MatrixPreferences preferences = MatrixPreferences(id);
+
+    var levels = await preferences.getChosenLevels(id);
+    var dependentLevelsToCheck = new HashMap<BigInt, List<BigInt>>();
+    var dependentLevelsToUncheck = new HashMap<BigInt, List<BigInt>>();
+
+    for (final item in parsedItem.knowledgeDbItems) {
+      var currentLevels = new List<BigInt>();
+      for (LevelDb level in item.levelDbItems) {
+        if (levels.contains(level.id.toString())) {
+          level.isChecked = true;
+        } else {
+          level.isChecked = false;
+        }
+        currentLevels.add(level.id);
+
+        var levelsCopy = new List<BigInt>();
+        levelsCopy.addAll(currentLevels);
+
+        dependentLevelsToCheck[level.id] = levelsCopy;
+      }
+
+      currentLevels = new List<BigInt>();
+
+      for (var i = item.levelDbItems.length - 1; i >= 0; i--) {
+        LevelDb level = item.levelDbItems[i];
+
+        currentLevels.add(level.id);
+
+        var levelsCopy = new List<BigInt>();
+        levelsCopy.addAll(currentLevels);
+
+        dependentLevelsToUncheck[level.id] = levelsCopy;
+      }
+
+    }
+
+    return new MatrixDetailDbResult.origin(
+        parsedItem,
+        dependentLevelsToCheck,
+        dependentLevelsToUncheck);
   }
 
   void saveMatrix(MatrixDb matrix) async {

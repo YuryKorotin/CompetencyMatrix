@@ -45,8 +45,6 @@ class MatrixRepository {
         progress: matrixProgress);
   }
 
-
-
   Future<MatrixDetailResult> loadSingle(BigInt id) async {
     String matrixPath = sprintf('assets/json/matrices/%d.json', [id.toInt()]);
     print(matrixPath);

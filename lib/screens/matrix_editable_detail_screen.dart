@@ -1,3 +1,4 @@
+import 'package:competency_matrix/view/matrix_detail/diagram_editable_widget.dart';
 import 'package:competency_matrix/view/matrix_detail/diagram_widget.dart';
 import 'package:competency_matrix/view/matrix_detail/knowledge_editable_list_widget.dart';
 import 'package:competency_matrix/view/matrix_detail/knowledge_list_widget.dart';
@@ -27,7 +28,7 @@ class MatrixEditableState extends State<MatrixEditableDetailScreen> {
   MatrixEditableState(@required this.matrixItem, this.updateMatrices) {
     _children = [
       KnowledgeEditableListWidget(matrixItem.id, this.updateMatrices),
-      DiagramWidget(matrixItem.id)
+      DiagramEditableWidget(matrixItem.id)
     ];
   }
 
