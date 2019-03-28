@@ -40,6 +40,7 @@ class KnowledgeListState extends State<KnowledgeListWidget> {
 
   @override
   void initState() {
+    print(this._matrixId);
     matrixRepository.loadSingle(this._matrixId).then((parsedItem) => setState(() {
       this._items = viewModelBuilder.buildFromLoadedItem(parsedItem.matrixDetail);
       this._levelSchemeToCheck = parsedItem.dependentItemsForCheck;

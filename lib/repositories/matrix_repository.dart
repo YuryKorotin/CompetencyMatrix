@@ -49,6 +49,7 @@ class MatrixRepository {
 
   Future<MatrixDetailResult> loadSingle(BigInt id) async {
     String matrixPath = sprintf('assets/json/matrices/%d.json', [id.toInt()]);
+    print(matrixPath);
     var parsedItem = await
     readFromFile(matrixPath)
         .then((result) => json.decode(result))

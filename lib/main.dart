@@ -1,3 +1,4 @@
+import 'package:competency_matrix/database/models/matrix_db.dart';
 import 'package:competency_matrix/net/models/matrix.dart';
 import 'package:competency_matrix/repositories/matrix_repository.dart';
 import 'package:competency_matrix/repositories/matrix_repository_db.dart';
@@ -47,6 +48,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   List<ListItem> items;
   List<Matrix> _originItems;
+  List<MatrixDb> _userItems = new List();
   MatrixRepository matrixRepository = MatrixRepository();
   MatrixRepositoryDb matrixDbRepository = MatrixRepositoryDb();
   MatrixItemBuilder viewModelBuilder = MatrixItemBuilder();
@@ -62,7 +64,10 @@ class _MyHomePageState extends State<MyHomePage> {
           this._originItems = parsedItems;
         }))
         .then((onValue) => matrixDbRepository.getMatrices())
-        .then((matrices) => this.items.addAll(viewModelBuilder.buildFromLoadedDbItems(matrices)));
+        .then((matrices) => setState( () {
+          this.items.addAll(viewModelBuilder.buildFromLoadedDbItems(matrices));
+          this._userItems = matrices;
+        }));
   }
 
   @override
@@ -71,7 +76,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Widget buildContent() {
-    var widget = null;
+    var widget;
     if (items == null) {
       widget = new Center(
         child: new Column(
@@ -142,6 +147,13 @@ class _MyHomePageState extends State<MyHomePage> {
         subtitle: Text("Progress is $progress%"),
         onTap: () {
           if (!item.isEmbedded) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) =>
+                    MatrixEditableDetailScreen(items[index], () => refresh()),
+              ),
+            );
             return;
           }
           Navigator.push(
@@ -168,7 +180,10 @@ class _MyHomePageState extends State<MyHomePage> {
         ), onPress: (){
           helper.showQuestionDialog(
               context,
-                  (){},
+                  (){
+                matrixDbRepository.deleteMatrix(item.id);
+                refresh();
+                },
               "Attention",
               "Do you really want to delete item?");
         },  backgroudColor: Colors.grey),
@@ -197,13 +212,6 @@ class _MyHomePageState extends State<MyHomePage> {
     } else {
       return GestureDetector(
         onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) =>
-                  MatrixEditableDetailScreen(matrix, () => refresh()),
-            ),
-          );
         },
         child: Icon(Icons.ac_unit),
       );
@@ -260,6 +268,12 @@ class _MyHomePageState extends State<MyHomePage> {
         maxId = matrix.id;
       }
     }
-    return maxId;
+
+    for(MatrixDb matrix in this._userItems) {
+      if (maxId < matrix.id) {
+        maxId = matrix.id;
+      }
+    }
+    return maxId + BigInt.from(1);
   }
 }

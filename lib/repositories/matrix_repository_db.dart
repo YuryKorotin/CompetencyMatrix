@@ -62,7 +62,11 @@ class MatrixRepositoryDb{
     var dbClient = await db;
     await dbClient.transaction((txn) async {
       return await txn.rawInsert(
-          'INSERT INTO $MATRIX_TABLE_NAME($NAME_COLUMN_NAME, $CATEGORY_COLUMN_NAME, $DESCRITPION_COLUMN_NAME) VALUES(' +
+          'INSERT INTO $MATRIX_TABLE_NAME($ID_COLUMN_NAME, $NAME_COLUMN_NAME, $CATEGORY_COLUMN_NAME, $DESCRITPION_COLUMN_NAME) VALUES(' +
+              '\'' +
+              matrix.id.toString() +
+              '\'' +
+              ',' +
               '\'' +
               matrix.name +
               '\'' +
@@ -78,5 +82,11 @@ class MatrixRepositoryDb{
     });
   }
 
-
+  void deleteMatrix(BigInt matrixId) async {
+    var dbClient = await db;
+    await dbClient.transaction((txn) async {
+      return await txn.rawInsert(
+          'DELETE FROM $MATRIX_TABLE_NAME WHERE $ID_COLUMN_NAME=$matrixId');
+    });
+  }
 }

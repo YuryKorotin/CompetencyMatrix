@@ -23,6 +23,7 @@ class KnowledgeEditableListWidget extends StatefulWidget {
 class KnowledgeEditableListState extends State<KnowledgeEditableListWidget> {
   BigInt _matrixId;
   var _items;
+  var _errorHasOccured = false;
   HashMap<BigInt, List<BigInt>> _levelSchemeToCheck;
   HashMap<BigInt, List<BigInt>> _levelSchemeToUncheck;
 
@@ -40,20 +41,36 @@ class KnowledgeEditableListState extends State<KnowledgeEditableListWidget> {
 
   @override
   void initState() {
-    matrixRepository.loadSingle(this._matrixId).then((parsedItem) => setState(() {
-      this._items = viewModelBuilder.buildFromLoadedItem(parsedItem.matrixDetail);
-      this._levelSchemeToCheck = parsedItem.dependentItemsForCheck;
-      this._levelSchemeToUncheck = parsedItem.dependentItemsForUncheck;
-    }));
+    print(this._matrixId);
+    try {
+      matrixRepository.loadSingle(this._matrixId).then((parsedItem) =>
+          setState(() {
+            this._items =
+                viewModelBuilder.buildFromLoadedItem(parsedItem.matrixDetail);
+            this._levelSchemeToCheck = parsedItem.dependentItemsForCheck;
+            this._levelSchemeToUncheck = parsedItem.dependentItemsForUncheck;
+          }));
+    } catch (e) {
+      _errorHasOccured = true;
+    }
   }
 
   Widget buildContent() {
     var widget;
-    if (this._items == null) {
+    if (this._items == null && !_errorHasOccured) {
       widget = new Center(
         child: new Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[JumpingDotsProgressIndicator(fontSize: 20.0)],
+        ),
+      ); // This trailing comma makes auto-formatting nicer for build methods.
+      return widget;
+    }
+    if (this._items == null && _errorHasOccured) {
+      widget = new Center(
+        child: new Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[Text("Error while loading")],
         ),
       ); // This trailing comma makes auto-formatting nicer for build methods.
       return widget;
