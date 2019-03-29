@@ -1,13 +1,18 @@
+import 'package:competency_matrix/database/models/matrix_db.dart';
+import 'package:competency_matrix/net/models/matrix.dart';
 import 'package:competency_matrix/repositories/matrix_repository.dart';
 import 'package:competency_matrix/repositories/matrix_repository_db.dart';
 import 'package:competency_matrix/screens/matrix_detail_creation_screen.dart';
+import 'package:competency_matrix/screens/matrix_editable_detail_screen.dart';
 import 'package:competency_matrix/utils/colors_provider.dart';
+import 'package:competency_matrix/utils/dialog_helper.dart';
 import 'package:competency_matrix/vendor/barprogressindicator.dart';
 import 'package:competency_matrix/view/builders/matrix_item_builder.dart';
 import 'package:competency_matrix/view/models/heading_item.dart';
 import 'package:competency_matrix/view/models/list_item.dart';
 import 'package:competency_matrix/view/models/matrix_item.dart';
 import 'package:competency_matrix/screens/matrix_detail_screen.dart';
+import 'package:competency_matrix/view/swipe_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:percent_indicator/percent_indicator.dart';
@@ -42,6 +47,8 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   List<ListItem> items;
+  List<Matrix> _originItems;
+  List<MatrixDb> _userItems = new List();
   MatrixRepository matrixRepository = MatrixRepository();
   MatrixRepositoryDb matrixDbRepository = MatrixRepositoryDb();
   MatrixItemBuilder viewModelBuilder = MatrixItemBuilder();
@@ -54,9 +61,13 @@ class _MyHomePageState extends State<MyHomePage> {
         .load()
         .then((parsedItems) => setState(() {
           this.items = viewModelBuilder.buildFromLoadedItems(parsedItems);
+          this._originItems = parsedItems;
         }))
         .then((onValue) => matrixDbRepository.getMatrices())
-        .then((matrices) => this.items.addAll(viewModelBuilder.buildFromLoadedDbItems(matrices)));
+        .then((matrices) => setState( () {
+          this.items.addAll(viewModelBuilder.buildFromLoadedDbItems(matrices));
+          this._userItems = matrices;
+        }));
   }
 
   @override
@@ -65,7 +76,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Widget buildContent() {
-    var widget = null;
+    var widget;
     if (items == null) {
       widget = new Center(
         child: new Column(
@@ -105,38 +116,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
           );
         } else if (item is MatrixItem) {
-          int progress = item.progress;
-          return ListTile(
-            trailing: getEditIcon(item),
-            //trailing: Icon(Icons.trip_origin),
-            leading: CircularPercentIndicator(
-              radius: 50.0,
-              lineWidth: 10.0,
-              percent: progress / 100,
-              center: new Icon(
-                Icons.person_pin,
-                size: 30.0,
-                color: _colorsProvider.getColorByProgress(progress),
-              ),
-              backgroundColor: Colors.grey,
-              progressColor: _colorsProvider.getColorByProgress(progress),
-            ),
-            //leading: const Icon(Icons.flight_land),
-            title: Text(item.name),
-            subtitle: Text("Progress is $progress%"),
-            onTap: () {
-              if (!item.isEmbedded) {
-                return;
-              }
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) =>
-                      MatrixDetailScreen(items[index], () => refresh()),
-                ),
-              );
-            },
-          );
+          return buildSwipableItem(index, item);
         }
       },
     );
@@ -144,11 +124,97 @@ class _MyHomePageState extends State<MyHomePage> {
     return widget;
   }
 
+  Widget buildSwipableItem(int index, MatrixItem item) {
+    DialogHelper helper = new DialogHelper();
+    int progress = item.progress;
+
+    var itemContentWidget = ListTile(
+        trailing: getEditIcon(item),
+        leading: CircularPercentIndicator(
+          radius: 50.0,
+          lineWidth: 10.0,
+          percent: progress / 100,
+          center: new Icon(
+            Icons.person_pin,
+            size: 30.0,
+            color: _colorsProvider.getColorByProgress(progress),
+          ),
+          backgroundColor: Colors.grey,
+          progressColor: _colorsProvider.getColorByProgress(progress),
+        ),
+        //leading: const Icon(Icons.flight_land),
+        title: Text(item.name),
+        subtitle: Text("Progress is $progress%"),
+        onTap: () {
+          if (!item.isEmbedded) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) =>
+                    MatrixEditableDetailScreen(items[index], () => refresh()),
+              ),
+            );
+            return;
+          }
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) =>
+                  MatrixDetailScreen(items[index], () => refresh()),
+            ),
+          );
+        });
+
+    if(item.isEmbedded) {
+      return itemContentWidget;
+    }
+
+    return new OnSlide(
+      items: <ActionItems>[
+        new ActionItems(
+            icon: new IconButton(
+              icon: new Icon(Icons.delete),
+              onPressed: () {
+              },
+              color: Colors.red,
+        ), onPress: (){
+          helper.showQuestionDialog(
+              context,
+                  (){
+                matrixDbRepository.deleteMatrix(item.id);
+                refresh();
+                },
+              "Attention",
+              "Do you really want to delete item?");
+        },  backgroudColor: Colors.grey),
+        new ActionItems(
+            icon: new IconButton(
+              icon: new Icon(Icons.mode_edit),
+              onPressed: () {},
+              color: Colors.blue,
+        ), onPress: (){},  backgroudColor: Colors.grey),
+        //new ActionItems(icon: new IconButton(  icon: new Icon(Icons.bookmark),
+        //  onPressed: () {}, color: Colors.orange,
+        //), onPress: (){},  backgroudColor: Colors.blueGrey),
+      ],
+      child: new Container(
+          padding: const EdgeInsets.only(top:10.0),
+          width: 200.0,
+          height: 80.0,
+          child: itemContentWidget,
+          )
+      );
+  }
+
   Widget getEditIcon(MatrixItem matrix) {
     if (matrix.isEmbedded) {
       return null;
     } else {
-      return Icon(Icons.edit);
+      return GestureDetector(
+        onTap: () {
+        },
+        child: Icon(Icons.ac_unit),
+      );
     }
   }
 
@@ -184,7 +250,7 @@ class _MyHomePageState extends State<MyHomePage> {
             context,
             MaterialPageRoute(
               builder: (context) =>
-                  MatrixDetailCreationScreen(() => refresh()),
+                  MatrixDetailCreationScreen(() => refresh(), findNewId()),
             ),
           );
         },
@@ -192,5 +258,22 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Icon(Icons.add),
       ),
     );
+  }
+
+  BigInt findNewId() {
+    var maxId = this._originItems.first.id;
+
+    for(Matrix matrix in this._originItems) {
+      if (maxId < matrix.id) {
+        maxId = matrix.id;
+      }
+    }
+
+    for(MatrixDb matrix in this._userItems) {
+      if (maxId < matrix.id) {
+        maxId = matrix.id;
+      }
+    }
+    return maxId + BigInt.from(1);
   }
 }

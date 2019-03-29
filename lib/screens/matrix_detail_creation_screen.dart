@@ -5,19 +5,28 @@ import 'package:flutter/material.dart';
 class MatrixDetailCreationScreen extends StatefulWidget {
 
   final void Function() updateMatrices;
-  MatrixDetailCreationScreen(this.updateMatrices);
+  final BigInt newId;
+  MatrixDetailCreationScreen(this.updateMatrices, this.newId);
 
   @override
   State<StatefulWidget> createState() {
-    return MatrixCreationState(this.updateMatrices);
+    return MatrixCreationState(this.updateMatrices, this.newId);
   }
 
 }
 class MatrixCreationState extends State<MatrixDetailCreationScreen> {
 
-  MatrixCreationState(this.updateMatrices);
+  MatrixCreationState(this.updateMatrices, this.newId) {
+    matrix = new MatrixDb(
+        id: BigInt.from(newId.toInt()),
+        name: "",
+        description: "",
+        category: "",
+        isEmbedded: false,
+        progress: 0);
+  }
 
-  MatrixDb matrix = new MatrixDb(id: BigInt.from(0), name: "",  description: "", category: "", isEmbedded: false, progress: 0);
+  MatrixDb matrix;
 
   String name;
   String description;
@@ -25,6 +34,7 @@ class MatrixCreationState extends State<MatrixDetailCreationScreen> {
   final scaffoldKey = new GlobalKey<ScaffoldState>();
   final formKey = new GlobalKey<FormState>();
   final void Function() updateMatrices;
+  final BigInt newId;
 
   @override
   Widget build(BuildContext context) {
@@ -52,21 +62,21 @@ class MatrixCreationState extends State<MatrixDetailCreationScreen> {
                 keyboardType: TextInputType.text,
                 decoration: new InputDecoration(labelText: 'Name'),
                 validator: (val) =>
-                val.length == 0 ?"Enter name" : null,
+                val.length == 0  || val.length > 30 ? "Enter right name" : null,
                 onSaved: (val) => this.name = val,
               ),
               new TextFormField(
                 keyboardType: TextInputType.text,
                 decoration: new InputDecoration(labelText: 'Category'),
                 validator: (val) =>
-                val.length ==0 ? 'Enter category' : null,
+                val.length == 0  || val.length > 30 ? 'Enter right category name ' : null,
                 onSaved: (val) => this.category = val,
               ),
               new TextFormField(
                 keyboardType: TextInputType.text,
                 decoration: new InputDecoration(labelText: 'Description'),
                 validator: (val) =>
-                val.length ==0 ? 'Enter description' : null,
+                  val.length == 0 || val.length > 60 ? 'Enter right description' : null,
                 onSaved: (val) => this.description = val,
               ),
               /*new TextFormField(
@@ -99,7 +109,7 @@ class MatrixCreationState extends State<MatrixDetailCreationScreen> {
       return null;
     }
     var matrix = MatrixDb(
-        id: BigInt.from(0),
+        id: newId + BigInt.from(newId.toInt()),
         name: name,
         description: description,
         category: category,
@@ -118,6 +128,11 @@ class MatrixCreationState extends State<MatrixDetailCreationScreen> {
 
   void navigateToMatrixList(){
     updateMatrices();
+
+    Future.delayed(const Duration(milliseconds: 500), () {
+      Navigator.of(context).pop();
+    });
+
     //Navigator.pop(context);
   }
 }
