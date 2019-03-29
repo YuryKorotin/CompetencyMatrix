@@ -1,9 +1,9 @@
 
 
 class LevelDb {
-  final BigInt id;
+  BigInt id;
   final String name;
-  final String description;
+  String description;
   bool isChecked;
 
   LevelDb(
