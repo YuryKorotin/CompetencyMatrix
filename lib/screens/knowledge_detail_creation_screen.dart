@@ -28,7 +28,7 @@ class KnowledgeCreationState extends State<KnowledgeDetailCreationScreen> {
       levels.add(
           new LevelDb(
               id: BigInt.from(i),
-              name: Consts.KNOWLEDGE_TO_HUMAN_MAP[names[i]],
+              name: names[i],
               description: ""
           ));
     }
