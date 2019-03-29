@@ -187,25 +187,25 @@
       "name": "Problem decomposition",
       "levels": [
         {
-          "id": 21,
+          "id": 25,
           "name": "pow(2, n)",
           "description": "Only straight line code with copy paste for reuse",
           "is_checked": false
         },
         {
-          "id": 22,
+          "id": 26,
           "name": "pow(n, 2)",
           "description": "Able to break up problem into multiple functions",
           "is_checked": false
         },
         {
-          "id": 23,
+          "id": 27,
           "name": "n",
           "description": "Able to come up with reusable functions/objects that solve the overall problem",
           "is_checked": false
         },
         {
-          "id": 24,
+          "id": 28,
           "name": "log(n)",
           "description": "Use of appropriate data structures and algorithms and comes up with generic/object-oriented code that encapsulate aspects of the problem that are subject to change",
           "is_checked": false
