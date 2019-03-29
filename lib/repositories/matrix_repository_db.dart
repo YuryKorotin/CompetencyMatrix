@@ -40,6 +40,9 @@ class MatrixRepositoryDb{
     io.Directory documentsDirectory = await getApplicationDocumentsDirectory();
     String path = join(documentsDirectory.path, Consts.DATABASE_NAME);
     var theDb = await openDatabase(path, version: 1, onCreate: _onCreate);
+
+    theDb.execute("PRAGMA foreign_keys=ON;");
+
     return theDb;
   }
 
@@ -60,7 +63,7 @@ class MatrixRepositoryDb{
         $NAME_COLUMN_NAME TEXT,
         $MATRIX_ID_COLUMN_NAME INTEGER NOT NULL,
         FOREIGN KEY ($MATRIX_ID_COLUMN_NAME) 
-        REFERENCES $MATRIX_TABLE_NAME($ID_COLUMN_NAME)
+        REFERENCES $MATRIX_TABLE_NAME($ID_COLUMN_NAME) ON DELETE CASCADE
         )""");
 
     await db.execute(
@@ -70,7 +73,7 @@ class MatrixRepositoryDb{
         $DESCRITPION_COLUMN_NAME TEXT,
         $KNOWLEDGE_ITEM_ID_COLUMN_NAME INTEGER NOT NULL,
         FOREIGN KEY ($KNOWLEDGE_ITEM_ID_COLUMN_NAME) 
-        REFERENCES $KNOWLEDGE_ITEMS_TABLE_NAME($ID_COLUMN_NAME)
+        REFERENCES $KNOWLEDGE_ITEMS_TABLE_NAME($ID_COLUMN_NAME) ON DELETE CASCADE
         )""");
   }
 

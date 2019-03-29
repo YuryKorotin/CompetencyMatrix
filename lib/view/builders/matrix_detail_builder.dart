@@ -47,7 +47,7 @@ class MatrixDetailBuilder {
                 level.id,
                 itemName,
                 level.description,
-                false));
+                level.isChecked));
       }
     }
 

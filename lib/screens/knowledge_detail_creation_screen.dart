@@ -22,13 +22,13 @@ class KnowledgeCreationState extends State<KnowledgeDetailCreationScreen> {
 
   KnowledgeCreationState(this.updateMatrix, this.matrixId) {
     List<LevelDb> levels = new List<LevelDb>();
-    var names = Consts.KNOWLEDGE_TO_HUMAN_MAP.values.toList();
+    var names = Consts.KNOWLEDGE_TO_HUMAN_MAP.keys.toList();
 
     for(var i = 0; i < names.length; i++) {
       levels.add(
           new LevelDb(
               id: BigInt.from(i),
-              name: names[i],
+              name: Consts.KNOWLEDGE_TO_HUMAN_MAP[names[i]],
               description: ""
           ));
     }
@@ -87,7 +87,7 @@ class KnowledgeCreationState extends State<KnowledgeDetailCreationScreen> {
       onSaved: (val) => this.knowledgeItemDb.name = val,
     ));
     for (LevelDb levelDb in knowledgeItemDb.levelDbItems) {
-      var name = levelDb.name.toUpperCase();
+      var name = Consts.KNOWLEDGE_TO_HUMAN_MAP[levelDb.name].toUpperCase();
       resultList.add(new TextFormField(
         keyboardType: TextInputType.text,
         decoration: new InputDecoration(labelText: "$name description"),
