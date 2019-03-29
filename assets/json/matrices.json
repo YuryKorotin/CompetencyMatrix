@@ -6,21 +6,5 @@
     "description": "profi",
     "embedded": true,
     "progress": 90
-  },
-  {
-    "id": 2,
-    "name": "Web programmer",
-    "category" :"Programming",
-    "description": "medium",
-    "embedded": true,
-    "progress": 50
-  },
-  {
-    "id": 3,
-    "name": "Network Security",
-    "category" :"Security",
-    "description": "medium",
-    "embedded": true,
-    "progress": 10
   }
 ]
