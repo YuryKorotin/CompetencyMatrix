@@ -16,6 +16,7 @@ import 'package:competency_matrix/view/swipe_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:percent_indicator/percent_indicator.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 void main() {
   runApp(CompetencyMatrixApp());
@@ -67,6 +68,13 @@ class _MyHomePageState extends State<MyHomePage> {
         .then((matrices) => setState( () {
           this.items.addAll(viewModelBuilder.buildFromLoadedDbItems(matrices));
           this._userItems = matrices;
+          print("HERE");
+          Firestore.instance
+              .collection('matrices')
+              .where("category", isEqualTo: "Programming")
+              .snapshots()
+              .listen((data) =>
+              data.documents.forEach((doc) => print(doc["name"])));
         }));
   }
 
