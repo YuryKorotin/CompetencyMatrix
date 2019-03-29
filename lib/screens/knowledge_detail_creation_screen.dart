@@ -21,10 +21,10 @@ class KnowledgeDetailCreationScreen extends StatefulWidget {
 class KnowledgeCreationState extends State<KnowledgeDetailCreationScreen> {
 
   KnowledgeCreationState(this.updateMatrix, this.matrixId) {
-    var levels = new List();
+    List<LevelDb> levels = new List<LevelDb>();
     var names = Consts.KNOWLEDGE_TO_HUMAN_MAP.values.toList();
 
-    for(var i = 0; i < 3; i++) {
+    for(var i = 0; i < names.length; i++) {
       levels.add(
           new LevelDb(
               id: BigInt.from(i),
@@ -54,7 +54,7 @@ class KnowledgeCreationState extends State<KnowledgeDetailCreationScreen> {
     return Scaffold(
       key: scaffoldKey,
       appBar: AppBar(
-        title: Text("Creation of matrix"),
+        title: Text("Creation of knowledge item"),
           actions: <Widget>[
             new IconButton(
               icon: const Icon(Icons.view_list),
@@ -77,8 +77,8 @@ class KnowledgeCreationState extends State<KnowledgeDetailCreationScreen> {
     );
   }
 
-  List<TextFormField> fieldsForLevels() {
-    var resultList = List();
+  List<Widget> fieldsForLevels() {
+    List<Widget> resultList = List<Widget>();
     resultList.add(new TextFormField(
       keyboardType: TextInputType.text,
       decoration: new InputDecoration(labelText: 'Name'),
@@ -109,12 +109,8 @@ class KnowledgeCreationState extends State<KnowledgeDetailCreationScreen> {
     }else{
       return null;
     }
-    var knowledgeItem = KnowledgeItemDb(
-        id: BigInt.from(0),
-        name: name,
-        );
     var repository = MatrixRepositoryDb();
-    repository.saveKnowledgeItem(knowledgeItem, matrixId);
+    repository.saveKnowledgeItem(knowledgeItemDb, matrixId);
     _showSnackBar("Data saved successfully");
   }
 

@@ -3,6 +3,7 @@ import 'dart:collection';
 import 'package:competency_matrix/interactors/matrix_detail_interactor.dart';
 import 'package:competency_matrix/repositories/matrix_repository.dart';
 import 'package:competency_matrix/repositories/matrix_repository_db.dart';
+import 'package:competency_matrix/screens/knowledge_detail_creation_screen.dart';
 import 'package:competency_matrix/utils/matrix_preferences.dart';
 import 'package:competency_matrix/view/builders/matrix_detail_builder.dart';
 import 'package:competency_matrix/view/models/heading_item.dart';
@@ -28,7 +29,6 @@ class KnowledgeEditableListState extends State<KnowledgeEditableListWidget> {
   HashMap<BigInt, List<BigInt>> _levelSchemeToCheck;
   HashMap<BigInt, List<BigInt>> _levelSchemeToUncheck;
 
-  MatrixDetailInteractor interactor = MatrixDetailInteractor();
   MatrixRepositoryDb matrixRepository = MatrixRepositoryDb();
   MatrixPreferences matrixPreferences;
   MatrixDetailBuilder viewModelBuilder = MatrixDetailBuilder();
@@ -42,14 +42,17 @@ class KnowledgeEditableListState extends State<KnowledgeEditableListWidget> {
 
   @override
   void initState() {
-    print(this._matrixId);
+    loadItems();
+  }
+
+  void loadItems() {
     try {
       matrixRepository.loadSingle(this._matrixId).then((loadedItem) =>
           setState(() {
             this._items =
                 viewModelBuilder.buildFromDbItem(loadedItem.matrixDetail);
-                this._levelSchemeToCheck = loadedItem.dependentItemsForCheck;
-                this._levelSchemeToUncheck = loadedItem.dependentItemsForUncheck;
+            this._levelSchemeToCheck = loadedItem.dependentItemsForCheck;
+            this._levelSchemeToUncheck = loadedItem.dependentItemsForUncheck;
           }));
     } catch (e) {
       _errorHasOccured = true;
@@ -114,12 +117,29 @@ class KnowledgeEditableListState extends State<KnowledgeEditableListWidget> {
     return widget;
   }
 
+  void refresh() {
+    loadItems();
+  }
+
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
       body: new Center(
         child: buildContent()
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) =>
+                  KnowledgeDetailCreationScreen(() => refresh(), _matrixId),
+            ),
+          );
+        },
+        tooltip: 'Create new matrix',
+        child: Icon(Icons.add),
+      )
     );
   }
 

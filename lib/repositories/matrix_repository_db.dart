@@ -208,18 +208,15 @@ class MatrixRepositoryDb{
   void saveKnowledgeItem(KnowledgeItemDb item, BigInt matrixId) async {
     var dbClient = await db;
     var id = await dbClient.transaction((txn) async {
-      return await txn.rawInsert(
-          """INSERT INTO $KNOWLEDGE_ITEMS_TABLE_NAME
+      var name = item.name;
+      var id = matrixId.toString();
+      var queryString = """INSERT INTO $KNOWLEDGE_ITEMS_TABLE_NAME
           ($NAME_COLUMN_NAME, 
-           $MATRIX_ID_COLUMN_NAME) VALUES(""" +
-              '\'' +
-              item.name +
-              '\'' +
-              ',' +
-              '\'' +
-              matrixId.toString() +
-              '\'' +
-              ')');
+           $MATRIX_ID_COLUMN_NAME) VALUES(
+          \'$name\',
+          \'$id\')""";
+      print(queryString);
+      return await txn.rawInsert(queryString);
     });
 
     item.id = BigInt.from(id);
@@ -238,23 +235,18 @@ class MatrixRepositoryDb{
     var dbClient = await db;
     for (LevelDb levelDb in item.levelDbItems) {
       dbClient.transaction((txn) async {
-        return await txn.rawInsert(
-            """INSERT INTO $LEVELS_TABLE_NAME
+        var id = item.id.toString();
+        var description = levelDb.description;
+        var name = levelDb.name;
+        var queryString = """INSERT INTO $LEVELS_TABLE_NAME
           ($NAME_COLUMN_NAME, 
            $DESCRITPION_COLUMN_NAME,
-           $KNOWLEDGE_ITEM_ID_COLUMN_NAME) VALUES(""" +
-                '\'' +
-                levelDb.name +
-                '\'' +
-                ',' +
-                '\'' +
-                levelDb.description +
-                '\'' +
-                ',' +
-                '\'' +
-                item.id.toString() +
-                '\'' +
-                ')');
+           $KNOWLEDGE_ITEM_ID_COLUMN_NAME) VALUES(
+            \'$name\',
+            \'$description\',
+            \'$id\')""";
+        print(queryString);
+        return await txn.rawInsert(queryString);
       });
     }
   }

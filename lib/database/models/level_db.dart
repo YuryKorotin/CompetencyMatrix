@@ -4,7 +4,7 @@ class LevelDb {
   BigInt id;
   final String name;
   String description;
-  bool isChecked;
+  bool isChecked = false;
 
   LevelDb(
       {this.id,
