@@ -9,7 +9,6 @@ import 'package:competency_matrix/repositories/matrix_detail_db_result.dart';
 import 'package:competency_matrix/utils/consts.dart';
 import 'package:competency_matrix/utils/matrix_preferences.dart';
 import 'package:path/path.dart';
-import 'package:sprintf/sprintf.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -206,11 +205,57 @@ class MatrixRepositoryDb{
     });
   }
 
+  void saveKnowledgeItem(KnowledgeItemDb item, BigInt matrixId) async {
+    var dbClient = await db;
+    var id = await dbClient.transaction((txn) async {
+      return await txn.rawInsert(
+          """INSERT INTO $KNOWLEDGE_ITEMS_TABLE_NAME
+          ($NAME_COLUMN_NAME, 
+           $MATRIX_ID_COLUMN_NAME) VALUES(""" +
+              '\'' +
+              item.name +
+              '\'' +
+              ',' +
+              '\'' +
+              matrixId.toString() +
+              '\'' +
+              ')');
+    });
+
+    item.id = BigInt.from(id);
+    saveLevels(item);
+  }
+
   void deleteMatrix(BigInt matrixId) async {
     var dbClient = await db;
     await dbClient.transaction((txn) async {
       return await txn.rawInsert(
           'DELETE FROM $MATRIX_TABLE_NAME WHERE $ID_COLUMN_NAME=$matrixId');
     });
+  }
+
+  void saveLevels(KnowledgeItemDb item) async {
+    var dbClient = await db;
+    for (LevelDb levelDb in item.levelDbItems) {
+      dbClient.transaction((txn) async {
+        return await txn.rawInsert(
+            """INSERT INTO $LEVELS_TABLE_NAME
+          ($NAME_COLUMN_NAME, 
+           $DESCRITPION_COLUMN_NAME,
+           $KNOWLEDGE_ITEM_ID_COLUMN_NAME) VALUES(""" +
+                '\'' +
+                levelDb.name +
+                '\'' +
+                ',' +
+                '\'' +
+                levelDb.description +
+                '\'' +
+                ',' +
+                '\'' +
+                item.id.toString() +
+                '\'' +
+                ')');
+      });
+    }
   }
 }
