@@ -25,6 +25,7 @@ class MatrixPreferences {
   }
 
   Future<bool> addLevel(BigInt value) async {
+    print("$_matrixId $value");
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 
     List<String> levels = prefs.getStringList(_matrixId.toString() + _kLevelsPrefs) ?? List<String>();

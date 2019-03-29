@@ -1,32 +1,34 @@
+import 'package:competency_matrix/view/matrix_detail/diagram_editable_widget.dart';
 import 'package:competency_matrix/view/matrix_detail/diagram_widget.dart';
+import 'package:competency_matrix/view/matrix_detail/knowledge_editable_list_widget.dart';
 import 'package:competency_matrix/view/matrix_detail/knowledge_list_widget.dart';
 import 'package:competency_matrix/view/models/matrix_item.dart';
 import 'package:flutter/material.dart';
 
-class MatrixDetailScreen extends StatefulWidget {
+class MatrixEditableDetailScreen extends StatefulWidget {
 
   final MatrixItem matrixItem;
   final void Function() updateMatrices;
 
-  MatrixDetailScreen(this.matrixItem, this.updateMatrices);
+  MatrixEditableDetailScreen(this.matrixItem, this.updateMatrices);
 
   @override
   State<StatefulWidget> createState() {
-    return MatrixState(this.matrixItem, this.updateMatrices);
+    return MatrixEditableState(this.matrixItem, this.updateMatrices);
   }
 
 }
 
-class MatrixState extends State<MatrixDetailScreen> {
+class MatrixEditableState extends State<MatrixEditableDetailScreen> {
   int _currentIndex = 0;
   List<Widget> _children;
   final MatrixItem matrixItem;
   final void Function() updateMatrices;
 
-  MatrixState(@required this.matrixItem, this.updateMatrices) {
+  MatrixEditableState(@required this.matrixItem, this.updateMatrices) {
     _children = [
-      KnowledgeListWidget(matrixItem.id, this.updateMatrices),
-      DiagramWidget(matrixItem.id)
+      KnowledgeEditableListWidget(matrixItem.id, this.updateMatrices),
+      DiagramEditableWidget(matrixItem.id)
     ];
   }
 
