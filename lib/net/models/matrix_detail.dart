@@ -1,15 +1,11 @@
+import 'package:competency_matrix/entities/matrix_detail_entity.dart';
 import 'package:competency_matrix/net/models/knowledge_item.dart';
 
-class MatrixDetail {
-  final BigInt id;
-  final String name;
-  final List<KnowledgeItem> items;
-
-  MatrixDetail({
-    this.id,
-    this.name,
-    this.items
-  });
+class MatrixDetail extends MatrixDetailEntity{
+  MatrixDetail(
+    id,
+    name,
+    items) : super(id, name, items);
 
   factory MatrixDetail.fromJson(Map<String, dynamic> json){
 
@@ -18,9 +14,9 @@ class MatrixDetail {
     List<KnowledgeItem> itemList =
     items.map((i) => KnowledgeItem.fromJson(i)).toList();
     return new MatrixDetail(
-        id : new BigInt.from(json["id"]),
-        name: json['name'],
-        items: itemList,
+        new BigInt.from(json["id"]),
+        json['name'],
+        itemList,
     );
   }
 }

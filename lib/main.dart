@@ -68,10 +68,9 @@ class _MyHomePageState extends State<MyHomePage> {
         .then((matrices) => setState( () {
           this.items.addAll(viewModelBuilder.buildFromLoadedDbItems(matrices));
           this._userItems = matrices;
-          print("HERE");
           Firestore.instance
               .collection('matrices')
-              .where("category", isEqualTo: "Programming")
+              //.where("category", isEqualTo: "Programming")
               .snapshots()
               .listen((data) =>
               data.documents.forEach((doc) => print(doc["name"])));
