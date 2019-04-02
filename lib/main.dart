@@ -64,14 +64,13 @@ class _MyHomePageState extends State<MyHomePage> {
           this.items = viewModelBuilder.buildFromLoadedItems(parsedItems);
           this._originItems = parsedItems;
         }))
-        .then((onValue) => matrixDbRepository.getMatrices())
+        .then((onValue) => matrixDbRepository.load())
         .then((matrices) => setState( () {
           this.items.addAll(viewModelBuilder.buildFromLoadedDbItems(matrices));
           this._userItems = matrices;
-          print("HERE");
           Firestore.instance
               .collection('matrices')
-              .where("category", isEqualTo: "Programming")
+              //.where("category", isEqualTo: "Programming")
               .snapshots()
               .listen((data) =>
               data.documents.forEach((doc) => print(doc["name"])));

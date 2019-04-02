@@ -1,16 +1,11 @@
-class MatrixDb {
-  final BigInt id;
-  final String name;
-  final String description;
-  final String category;
-  final bool isEmbedded;
-  final int progress;
+import 'package:competency_matrix/entities/matrix_entity.dart';
 
-  MatrixDb(
-      {this.id,
-      this.name,
-      this.description,
-      this.category,
-      this.isEmbedded,
-      this.progress});
+class MatrixDb extends MatrixEntity{
+  MatrixDb(BigInt id,
+      String name,
+      String description,
+      String category,
+      bool isEmbedded,
+      int progress) :
+        super (id, name, description, category, isEmbedded, progress);
 }

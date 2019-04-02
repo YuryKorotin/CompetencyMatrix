@@ -1,22 +1,18 @@
-class KnowledgeLevel {
-  final BigInt id;
-  final String name;
-  final String description;
-  bool isChecked;
+import 'package:competency_matrix/entities/knowledge_level_enity.dart';
 
-  KnowledgeLevel({
-    this.id,
-    this.name,
-    this.description,
-    this.isChecked,
-  });
+class KnowledgeLevel extends KnowledgeLevelEntity{
+  KnowledgeLevel(
+    id,
+    name,
+    description,
+    isChecked) : super(id, name, description, isChecked);
 
   factory KnowledgeLevel.fromJson(Map<String, dynamic> json){
     return new KnowledgeLevel(
-        id : new BigInt.from(json["id"]),
-        name: json['name'],
-        description: json['description'],
-        isChecked: json['isChecked'],
+        new BigInt.from(json["id"]),
+        json['name'],
+        json['description'],
+        json['isChecked'],
     );
   }
 }

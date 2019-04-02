@@ -5,14 +5,19 @@ import 'package:competency_matrix/database/models/knowledge_db.dart';
 import 'package:competency_matrix/database/models/level_db.dart';
 import 'package:competency_matrix/database/models/matrix_db.dart';
 import 'package:competency_matrix/database/models/matrix_detaildb.dart';
+import 'package:competency_matrix/entities/matrix_detail_entity.dart';
+import 'package:competency_matrix/entities/matrix_entity.dart';
+import 'package:competency_matrix/entities/matrix_load_result.dart';
+import 'package:competency_matrix/repositories/base_matrix_repository.dart';
 import 'package:competency_matrix/repositories/matrix_detail_db_result.dart';
+import 'package:competency_matrix/statistics/matrix_statistics.dart';
 import 'package:competency_matrix/utils/consts.dart';
 import 'package:competency_matrix/utils/matrix_preferences.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path_provider/path_provider.dart';
 
-class MatrixRepositoryDb{
+class MatrixRepositoryDb extends BaseMatrixRepository {
   static const String MATRIX_TABLE_NAME = "matrices";
   static const String MATRIX_DETAIL_TABLE_NAME = "matrix_details";
   static const String KNOWLEDGE_ITEMS_TABLE_NAME = "knowledge_items";
@@ -78,19 +83,19 @@ class MatrixRepositoryDb{
   }
 
   // Retrieving matrices from Matrix Tables
-  Future<List<MatrixDb>> getMatrices() async {
+  Future<List<MatrixEntity>> load() async {
     var dbClient = await db;
     List<Map> list = await dbClient.rawQuery('SELECT * FROM $MATRIX_TABLE_NAME');
     List<MatrixDb> matrices = new List();
     for (int i = 0; i < list.length; i++) {
       matrices.add(
           new MatrixDb(
-              id: BigInt.from(list[i][ID_COLUMN_NAME]),
-              name: list[i][NAME_COLUMN_NAME],
-              category: list[i][CATEGORY_COLUMN_NAME],
-              description: list[i][DESCRITPION_COLUMN_NAME],
-              isEmbedded: false,
-              progress: 0));
+              BigInt.from(list[i][ID_COLUMN_NAME]),
+              list[i][NAME_COLUMN_NAME],
+              list[i][CATEGORY_COLUMN_NAME],
+              list[i][DESCRITPION_COLUMN_NAME],
+              false,
+              0));
     }
     return matrices;
   }
@@ -105,9 +110,9 @@ class MatrixRepositoryDb{
     for (int i = 0; i < list.length; i++) {
       levels.add(
           new LevelDb(
-              id: BigInt.from(list[i][ID_COLUMN_NAME]),
-              name: list[i][NAME_COLUMN_NAME],
-              description: list[i][DESCRITPION_COLUMN_NAME]
+              BigInt.from(list[i][ID_COLUMN_NAME]),
+              list[i][NAME_COLUMN_NAME],
+              list[i][DESCRITPION_COLUMN_NAME]
           ));
     }
     return levels;
@@ -120,26 +125,26 @@ class MatrixRepositoryDb{
     for (int i = 0; i < list.length; i++) {
       knowledgeItems.add(
           new KnowledgeItemDb(
-              id: BigInt.from(list[i][ID_COLUMN_NAME]),
-              name: list[i][NAME_COLUMN_NAME],
-              levelDbItems: await getLevels(BigInt.from(list[i][ID_COLUMN_NAME]))));
+              BigInt.from(list[i][ID_COLUMN_NAME]),
+              list[i][NAME_COLUMN_NAME],
+              await getLevels(BigInt.from(list[i][ID_COLUMN_NAME]))));
   }
     return knowledgeItems;
   }
 
-  Future<MatrixDetailDb> getMatrix(BigInt id) async {
+  Future<MatrixDetailEntity> getMatrix(BigInt id) async {
     var dbClient = await db;
     List<Map> list = await dbClient.rawQuery('SELECT * FROM $MATRIX_TABLE_NAME WHERE $ID_COLUMN_NAME=$id');
     MatrixDetailDb matrix = new MatrixDetailDb(
-      id: BigInt.from(list[0][ID_COLUMN_NAME]),
-      name: list[0][NAME_COLUMN_NAME],
-      knowledgeDbItems: await getKnowledgeItems(BigInt.from(list[0][ID_COLUMN_NAME])));
+      BigInt.from(list[0][ID_COLUMN_NAME]),
+      list[0][NAME_COLUMN_NAME],
+      await getKnowledgeItems(BigInt.from(list[0][ID_COLUMN_NAME])));
 
     return matrix;
   }
 
-  Future<MatrixDetailDbResult> loadSingle(BigInt id) async {
-    var parsedItem = await getMatrix(id);
+  Future<MatrixLoadResult> loadSingle(BigInt id) async {
+    MatrixDetailEntity parsedItem = await getMatrix(id);
 
     MatrixPreferences preferences = MatrixPreferences(id);
 
@@ -147,9 +152,9 @@ class MatrixRepositoryDb{
     var dependentLevelsToCheck = new HashMap<BigInt, List<BigInt>>();
     var dependentLevelsToUncheck = new HashMap<BigInt, List<BigInt>>();
 
-    for (final item in parsedItem.knowledgeDbItems) {
+    for (final item in parsedItem.items) {
       var currentLevels = new List<BigInt>();
-      for (LevelDb level in item.levelDbItems) {
+      for (LevelDb level in item.levels) {
         if (levels.contains(level.id.toString())) {
           level.isChecked = true;
         } else {
@@ -165,8 +170,8 @@ class MatrixRepositoryDb{
 
       currentLevels = new List<BigInt>();
 
-      for (var i = item.levelDbItems.length - 1; i >= 0; i--) {
-        LevelDb level = item.levelDbItems[i];
+      for (var i = item.levels.length - 1; i >= 0; i--) {
+        LevelDb level = item.levels[i];
 
         currentLevels.add(level.id);
 
@@ -178,7 +183,7 @@ class MatrixRepositoryDb{
 
     }
 
-    return new MatrixDetailDbResult.origin(
+    return new MatrixLoadResult.origin(
         parsedItem,
         dependentLevelsToCheck,
         dependentLevelsToUncheck);
@@ -236,7 +241,7 @@ class MatrixRepositoryDb{
 
   void saveLevels(KnowledgeItemDb item) async {
     var dbClient = await db;
-    for (LevelDb levelDb in item.levelDbItems) {
+    for (LevelDb levelDb in item.levels) {
       dbClient.transaction((txn) async {
         var id = item.id.toString();
         var description = levelDb.description;
@@ -252,5 +257,20 @@ class MatrixRepositoryDb{
         return await txn.rawInsert(queryString);
       });
     }
+  }
+
+  @override
+  Future<MatrixEntity> matrixWithProgress(MatrixEntity matrix) async {
+
+    MatrixStatistics statistics = MatrixStatistics(matrix.id);
+    var matrixProgress = await statistics.getMatrixProgress();
+
+    return new MatrixDb(
+        matrix.id,
+        matrix.name,
+        matrix.description,
+        matrix.category,
+        true,
+        matrixProgress);
   }
 }

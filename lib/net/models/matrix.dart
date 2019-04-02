@@ -1,30 +1,23 @@
+import 'package:competency_matrix/entities/matrix_entity.dart';
 import 'package:dartson/dartson.dart';
 
-class Matrix {
-  final BigInt id;
-  final String name;
-  final String description;
-  final String category;
-  final bool isEmbedded;
-  final int progress;
-
-  Matrix({
-    this.id,
-    this.name,
-    this.description,
-    this.category,
-    this.isEmbedded,
-    this.progress
-  });
+class Matrix extends MatrixEntity {
+  Matrix(BigInt id,
+    String name,
+    String description,
+    String category,
+    bool isEmbedded,
+    int progress
+  ) : super(id, name, description, category, isEmbedded, progress);
 
   factory Matrix.fromJson(Map<String, dynamic> json){
     return new Matrix(
-        id : new BigInt.from(json["id"]),
-        name: json['name'],
-        description: json['description'],
-        category: json['category'],
-        isEmbedded: json['embedded'],
-        progress: json["progress"]
+        new BigInt.from(json["id"]),
+        json['name'],
+        json['description'],
+        json['category'],
+        json['embedded'],
+        json["progress"]
     );
   }
 }

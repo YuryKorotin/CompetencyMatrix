@@ -50,7 +50,7 @@ class KnowledgeEditableListState extends State<KnowledgeEditableListWidget> {
       matrixRepository.loadSingle(this._matrixId).then((loadedItem) =>
           setState(() {
             this._items =
-                viewModelBuilder.buildFromDbItem(loadedItem.matrixDetail);
+                viewModelBuilder.buildFromLoadedItem(loadedItem.matrixDetail);
             this._levelSchemeToCheck = loadedItem.dependentItemsForCheck;
             this._levelSchemeToUncheck = loadedItem.dependentItemsForUncheck;
           }));
