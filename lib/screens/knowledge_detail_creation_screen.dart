@@ -27,16 +27,16 @@ class KnowledgeCreationState extends State<KnowledgeDetailCreationScreen> {
     for(var i = 0; i < names.length; i++) {
       levels.add(
           new LevelDb(
-              id: BigInt.from(i),
-              name: names[i],
-              description: ""
+              BigInt.from(i),
+              names[i],
+              ""
           ));
     }
 
     knowledgeItemDb = new KnowledgeItemDb(
-        id: BigInt.from(0),
-        name: "",
-        levelDbItems: levels);
+        BigInt.from(0),
+        "",
+        levels);
   }
 
   KnowledgeItemDb knowledgeItemDb;
@@ -86,7 +86,7 @@ class KnowledgeCreationState extends State<KnowledgeDetailCreationScreen> {
       val.length == 0  || val.length > 30 ? "Enter right name" : null,
       onSaved: (val) => this.knowledgeItemDb.name = val,
     ));
-    for (LevelDb levelDb in knowledgeItemDb.levelDbItems) {
+    for (LevelDb levelDb in knowledgeItemDb.levels) {
       var name = Consts.KNOWLEDGE_TO_HUMAN_MAP[levelDb.name].toUpperCase();
       resultList.add(new TextFormField(
         keyboardType: TextInputType.text,

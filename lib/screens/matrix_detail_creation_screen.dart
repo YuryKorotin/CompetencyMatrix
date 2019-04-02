@@ -18,12 +18,12 @@ class MatrixCreationState extends State<MatrixDetailCreationScreen> {
 
   MatrixCreationState(this.updateMatrices, this.newId) {
     matrix = new MatrixDb(
-        id: BigInt.from(newId.toInt()),
-        name: "",
-        description: "",
-        category: "",
-        isEmbedded: false,
-        progress: 0);
+        BigInt.from(newId.toInt()),
+        "",
+        "",
+        "",
+        false,
+        0);
   }
 
   MatrixDb matrix;
@@ -109,12 +109,12 @@ class MatrixCreationState extends State<MatrixDetailCreationScreen> {
       return null;
     }
     var matrix = MatrixDb(
-        id: newId + BigInt.from(newId.toInt()),
-        name: name,
-        description: description,
-        category: category,
-        isEmbedded: false,
-        progress: 0);
+        newId + BigInt.from(newId.toInt()),
+        name,
+        description,
+        category,
+        false,
+        0);
     var repository = MatrixRepositoryDb();
     repository.saveMatrix(matrix);
     _showSnackBar("Data saved successfully");

@@ -64,7 +64,7 @@ class _MyHomePageState extends State<MyHomePage> {
           this.items = viewModelBuilder.buildFromLoadedItems(parsedItems);
           this._originItems = parsedItems;
         }))
-        .then((onValue) => matrixDbRepository.getMatrices())
+        .then((onValue) => matrixDbRepository.load())
         .then((matrices) => setState( () {
           this.items.addAll(viewModelBuilder.buildFromLoadedDbItems(matrices));
           this._userItems = matrices;

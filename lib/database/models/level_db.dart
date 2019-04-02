@@ -1,13 +1,6 @@
+import 'package:competency_matrix/entities/knowledge_level_enity.dart';
 
-
-class LevelDb {
-  BigInt id;
-  final String name;
-  String description;
-  bool isChecked = false;
-
-  LevelDb(
-      {this.id,
-        this.name,
-        this.description});
+class LevelDb extends KnowledgeLevelEntity {
+  LevelDb(BigInt id, String name, String description)
+      : super(id, name, description, false);
 }

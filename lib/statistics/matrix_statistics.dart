@@ -2,6 +2,7 @@ import 'dart:collection';
 
 import 'package:competency_matrix/database/models/knowledge_db.dart';
 import 'package:competency_matrix/database/models/level_db.dart';
+import 'package:competency_matrix/entities/knowledge_item_entity.dart';
 import 'package:competency_matrix/net/models/knowledge_item.dart';
 import 'package:competency_matrix/net/models/knowledge_level.dart';
 import 'package:competency_matrix/repositories/matrix_repository.dart';
@@ -29,7 +30,7 @@ class MatrixStatistics {
     statistics[Consts.SERIOUS_KNOWLEDGE_LEVEL] = 0;
     statistics[Consts.COMPLEX_KNOWLEDGE_LEVEL] = 0;
 
-    for (KnowledgeItem item in items) {
+    for (KnowledgeItemEntity item in items) {
       var levels = item.levels;
       var lastName = levels.first.name;
       for (KnowledgeLevel level in levels) {
@@ -44,7 +45,7 @@ class MatrixStatistics {
 
   Future<HashMap<String, int>> getLevelsStatisticsForDb() async {
     var matrixDescription = await matrixDbRepository.getMatrix(this._matrixId);
-    var items = matrixDescription.knowledgeDbItems;
+    var items = matrixDescription.items;
 
     var statistics = HashMap<String, int>();
     statistics[Consts.BASE_KNOWLEDGE_LEVEL] = 0;
@@ -53,7 +54,7 @@ class MatrixStatistics {
     statistics[Consts.COMPLEX_KNOWLEDGE_LEVEL] = 0;
 
     for (KnowledgeItemDb item in items) {
-      var levels = item.levelDbItems;
+      var levels = item.levels;
       var lastName = levels.first.name;
       for (LevelDb level in levels) {
         if (level.isChecked) {
@@ -75,7 +76,7 @@ class MatrixStatistics {
     int itemsCount = 0;
     var completedLevels = 0;
 
-    for (KnowledgeItem item in items) {
+    for (KnowledgeItemEntity item in items) {
       itemsCount++;
       var levels = item.levels;
       for (KnowledgeLevel level in levels) {
