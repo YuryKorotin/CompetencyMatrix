@@ -1,7 +1,9 @@
 import 'package:competency_matrix/database/models/matrix_db.dart';
 import 'package:competency_matrix/net/models/matrix.dart';
+import 'package:competency_matrix/repositories/base_matrix_repository.dart';
 import 'package:competency_matrix/repositories/matrix_repository.dart';
 import 'package:competency_matrix/repositories/matrix_repository_db.dart';
+import 'package:competency_matrix/repositories/remote_repository.dart';
 import 'package:competency_matrix/screens/matrix_detail_creation_screen.dart';
 import 'package:competency_matrix/screens/matrix_editable_detail_screen.dart';
 import 'package:competency_matrix/utils/colors_provider.dart';
@@ -50,7 +52,7 @@ class _MyHomePageState extends State<MyHomePage> {
   List<ListItem> items;
   List<Matrix> _originItems;
   List<MatrixDb> _userItems = new List();
-  MatrixRepository matrixRepository = MatrixRepository();
+  BaseMatrixRepository matrixRepository = RemoteRepository();
   MatrixRepositoryDb matrixDbRepository = MatrixRepositoryDb();
   MatrixItemBuilder viewModelBuilder = MatrixItemBuilder();
   ColorsProvider _colorsProvider = ColorsProvider();
@@ -68,12 +70,6 @@ class _MyHomePageState extends State<MyHomePage> {
         .then((matrices) => setState( () {
           this.items.addAll(viewModelBuilder.buildFromLoadedDbItems(matrices));
           this._userItems = matrices;
-          Firestore.instance
-              .collection('matrices')
-              //.where("category", isEqualTo: "Programming")
-              .snapshots()
-              .listen((data) =>
-              data.documents.forEach((doc) => print(doc["name"])));
         }));
   }
 

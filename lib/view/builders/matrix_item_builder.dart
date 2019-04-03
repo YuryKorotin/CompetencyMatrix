@@ -1,4 +1,5 @@
 import 'package:competency_matrix/database/models/matrix_db.dart';
+import 'package:competency_matrix/entities/matrix_entity.dart';
 import 'package:competency_matrix/net/models/matrix.dart';
 import 'package:competency_matrix/view/models/heading_item.dart';
 import 'package:competency_matrix/view/models/list_item.dart';
@@ -41,7 +42,7 @@ class MatrixItemBuilder {
     return items;
   }
 
-  List<ListItem> buildFromLoadedItems(List<Matrix> items) {
+  List<ListItem> buildFromLoadedItems(List<MatrixEntity> items) {
     List<ListItem> viewItems = new List();
 
     String currentCategory = items.first.category;
