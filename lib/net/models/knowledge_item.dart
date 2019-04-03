@@ -1,15 +1,11 @@
+import 'package:competency_matrix/entities/knowledge_item_entity.dart';
 import 'package:competency_matrix/net/models/knowledge_level.dart';
 
-class KnowledgeItem {
-  final BigInt id;
-  final String name;
-  final List<KnowledgeLevel> levels;
-
-  KnowledgeItem({
-    this.id,
-    this.name,
-    this.levels
-  });
+class KnowledgeItem extends KnowledgeItemEntity {
+  KnowledgeItem(
+    BigInt id,
+    String name,
+    List<KnowledgeLevel> levels) : super (id, name, levels);
 
   factory KnowledgeItem.fromJson(Map<String, dynamic> json){
 
@@ -18,9 +14,9 @@ class KnowledgeItem {
     List<KnowledgeLevel> levelList =
     levels.map((i) => KnowledgeLevel.fromJson(i)).toList();
     return new KnowledgeItem(
-        id : new BigInt.from(json["id"]),
-        name: json['name'],
-        levels: levelList,
+        new BigInt.from(json["id"]),
+        json['name'],
+        levelList,
     );
   }
 }
