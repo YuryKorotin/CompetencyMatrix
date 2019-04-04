@@ -48,26 +48,46 @@ class RemoteRepository extends BaseMatrixRepository {
         matrixProgress);
   }
 
+  Future<List<DocumentSnapshot>> findLevelsForItem(documentID) async {
+    var levelSnapshots = List<DocumentSnapshot>();
+
+    var querySnapshots = await Firestore.instance
+        .collection('levels')
+        .where("knowledge_item_id", isEqualTo: documentID)
+        .getDocuments();
+
+    querySnapshots.documents.forEach((document) {
+      levelSnapshots.add(document);
+    });
+
+
+    return levelSnapshots;
+  }
+
   Future<MatrixDetailEntity> getMatrix(BigInt id) async {
 
     var itemSnapshots = List<DocumentSnapshot>();
     var levelSnapshots = List<DocumentSnapshot>();
 
-    DocumentSnapshot document;
-
-    Firestore.instance
+    DocumentSnapshot document = await Firestore.instance
         .collection('matrices')
         .document(id.toString())
-        .snapshots()
-        .listen((data) => document = data);
+        .get();
 
-    Firestore.instance
+
+    var querySnapshots = await Firestore.instance
         .collection('knowledge_items')
         .where("matrix_id", isEqualTo: id)
-        .snapshots()
-        .listen((data) =>
-        data.documents.forEach((doc) => itemSnapshots.add(doc)));
+        .getDocuments();
 
+    querySnapshots.documents.forEach((document) {
+      itemSnapshots.add(document);
+    });
+
+    for (var snapshot in itemSnapshots) {
+      var levels = await findLevelsForItem(snapshot.documentID);
+      levelSnapshots.addAll(levels);
+    }
 
     return FireMatrixDetail.fromDocument(document, itemSnapshots, levelSnapshots);
   }
