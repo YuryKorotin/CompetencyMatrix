@@ -17,8 +17,6 @@ class FireLevel extends KnowledgeLevelEntity{
       document['isChecked'],
     );
 
-    result.knowledgeItemId = document["knowledge_item_id"];
-
     return result;
   }
 }

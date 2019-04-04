@@ -1,4 +1,5 @@
 import 'package:competency_matrix/database/models/matrix_db.dart';
+import 'package:competency_matrix/entities/matrix_entity.dart';
 import 'package:competency_matrix/net/models/matrix.dart';
 import 'package:competency_matrix/repositories/base_matrix_repository.dart';
 import 'package:competency_matrix/repositories/matrix_repository.dart';
@@ -50,8 +51,8 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   List<ListItem> items;
-  List<Matrix> _originItems;
-  List<MatrixDb> _userItems = new List();
+  List<MatrixEntity> _originItems;
+  List<MatrixEntity> _userItems = new List();
   BaseMatrixRepository matrixRepository = RemoteRepository();
   MatrixRepositoryDb matrixDbRepository = MatrixRepositoryDb();
   MatrixItemBuilder viewModelBuilder = MatrixItemBuilder();

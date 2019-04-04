@@ -1,7 +1,9 @@
 import 'dart:collection';
 
 import 'package:competency_matrix/interactors/matrix_detail_interactor.dart';
+import 'package:competency_matrix/repositories/base_matrix_repository.dart';
 import 'package:competency_matrix/repositories/matrix_repository.dart';
+import 'package:competency_matrix/repositories/remote_repository.dart';
 import 'package:competency_matrix/utils/matrix_preferences.dart';
 import 'package:competency_matrix/view/builders/matrix_detail_builder.dart';
 import 'package:competency_matrix/view/models/heading_item.dart';
@@ -27,7 +29,7 @@ class KnowledgeListState extends State<KnowledgeListWidget> {
   HashMap<BigInt, List<BigInt>> _levelSchemeToUncheck;
 
   MatrixDetailInteractor interactor = MatrixDetailInteractor();
-  MatrixRepository matrixRepository = MatrixRepository();
+  BaseMatrixRepository matrixRepository = RemoteRepository();
   MatrixPreferences matrixPreferences;
   MatrixDetailBuilder viewModelBuilder = MatrixDetailBuilder();
   final void Function() updateMatrices;
@@ -77,7 +79,7 @@ class KnowledgeListState extends State<KnowledgeListWidget> {
         } else if (item is KnowledgeItem) {
           return CheckboxListTile(
             title: Text(item.name),
-            subtitle: Text(item.description),
+            subtitle: Text(item.description != null ? item.description : ""),
             value: item.isChecked,
             onChanged: (bool value) {
               setState(() {

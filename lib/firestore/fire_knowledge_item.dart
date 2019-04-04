@@ -20,7 +20,6 @@ class FireKnowledgeItem extends KnowledgeItemEntity {
       levels,
     );
 
-    result.matrixId = document['matrix_id'];
 
     return result;
   }

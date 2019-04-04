@@ -1,4 +1,6 @@
+import 'package:competency_matrix/repositories/base_matrix_repository.dart';
 import 'package:competency_matrix/repositories/matrix_repository.dart';
+import 'package:competency_matrix/repositories/remote_repository.dart';
 import 'package:competency_matrix/statistics/knowledge_progress.dart';
 import 'package:competency_matrix/statistics/matrix_statistics.dart';
 import 'package:competency_matrix/utils/color_pallette.dart';
@@ -27,7 +29,7 @@ class KnowledgeDiagramState extends State<DiagramWidget> {
   List<charts.Series> _seriesList;
   bool _animate;
 
-  MatrixRepository matrixRepository;
+  BaseMatrixRepository matrixRepository;
   MatrixStatistics _statistics;
 
   KnowledgeDiagramState(BigInt matrixId) {
@@ -39,7 +41,7 @@ class KnowledgeDiagramState extends State<DiagramWidget> {
 
   @override
   void initState() {
-    matrixRepository = MatrixRepository();
+    matrixRepository = RemoteRepository();
 
     _statistics.getLevelsStatistics().then((statisticsMap) =>
         setState(() {

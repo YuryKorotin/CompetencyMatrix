@@ -11,7 +11,6 @@ class FireMatrix extends MatrixEntity {
       : super(id, name, description, category, isEmbedded, progress);
 
   factory FireMatrix.fromDocument(DocumentSnapshot document){
-    print(document.data);
     return new FireMatrix(
         BigInt.from(int.parse(document.documentID)),
         document['name'],

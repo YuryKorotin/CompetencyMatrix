@@ -6,6 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:competency_matrix/entities/matrix_detail_entity.dart';
 import 'package:competency_matrix/entities/matrix_entity.dart';
 import 'package:competency_matrix/entities/matrix_load_result.dart';
+import 'package:competency_matrix/firestore/fire_knowledge_item.dart';
 import 'package:competency_matrix/firestore/fire_matrix.dart';
 import 'package:competency_matrix/firestore/fire_matrix_detail.dart';
 import 'package:competency_matrix/repositories/base_matrix_repository.dart';
@@ -48,16 +49,17 @@ class RemoteRepository extends BaseMatrixRepository {
         matrixProgress);
   }
 
-  Future<List<DocumentSnapshot>> findLevelsForItem(documentID) async {
+  Future<List<DocumentSnapshot>> findLevelsForItem(DocumentReference documentReference) async {
     var levelSnapshots = List<DocumentSnapshot>();
 
     var querySnapshots = await Firestore.instance
         .collection('levels')
-        .where("knowledge_item_id", isEqualTo: documentID)
+        .where("knowledge_item_id", isEqualTo: documentReference)
         .getDocuments();
 
     querySnapshots.documents.forEach((document) {
       levelSnapshots.add(document);
+      print(document.data);
     });
 
 
@@ -67,29 +69,39 @@ class RemoteRepository extends BaseMatrixRepository {
   Future<MatrixDetailEntity> getMatrix(BigInt id) async {
 
     var itemSnapshots = List<DocumentSnapshot>();
-    var levelSnapshots = List<DocumentSnapshot>();
 
-    DocumentSnapshot document = await Firestore.instance
+    var documentReference = await Firestore.instance
         .collection('matrices')
-        .document(id.toString())
-        .get();
+        .document(id.toString());
 
+    DocumentSnapshot document = await documentReference.get();
 
     var querySnapshots = await Firestore.instance
         .collection('knowledge_items')
-        .where("matrix_id", isEqualTo: id)
+        .where("matrix_id", isEqualTo: documentReference)
         .getDocuments();
 
-    querySnapshots.documents.forEach((document) {
-      itemSnapshots.add(document);
+    querySnapshots.documents.forEach((doc) {
+      itemSnapshots.add(doc);
     });
 
-    for (var snapshot in itemSnapshots) {
-      var levels = await findLevelsForItem(snapshot.documentID);
-      levelSnapshots.addAll(levels);
+    var builtItems = List<FireKnowledgeItem>();
+
+    for (var i = 0; i < itemSnapshots.length; i++) {
+      var doc = itemSnapshots[i];
+
+      var levelSnapshots = await findLevelsForItem(doc.reference);
+
+      var item = FireKnowledgeItem.fromDocument(doc, levelSnapshots);
+
+      builtItems.add(item);
     }
 
-    return FireMatrixDetail.fromDocument(document, itemSnapshots, levelSnapshots);
+    var builtItem = FireMatrixDetail.fromDocument(document);
+
+    builtItem.items = builtItems;
+
+    return builtItem;
   }
 
   @override

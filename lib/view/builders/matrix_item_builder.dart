@@ -66,7 +66,7 @@ class MatrixItemBuilder {
     return viewItems;
   }
 
-  List<ListItem> buildFromLoadedDbItems(List<MatrixDb> items) {
+  List<ListItem> buildFromLoadedDbItems(List<MatrixEntity> items) {
     List<ListItem> viewItems = new List();
 
     if (items.isEmpty) {

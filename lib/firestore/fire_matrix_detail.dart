@@ -9,17 +9,11 @@ class FireMatrixDetail extends MatrixDetailEntity{
       items) : super(id, name, items);
 
   factory FireMatrixDetail.fromDocument(
-      DocumentSnapshot document,
-      List<DocumentSnapshot> itemSnapshots,
-      List<DocumentSnapshot> levelSnapshots){
-
-    List<FireKnowledgeItem> items = new List();
-    itemSnapshots.forEach((doc) =>  items.add(FireKnowledgeItem.fromDocument(doc, levelSnapshots)));
-
+      DocumentSnapshot document){
     var result = new FireMatrixDetail(
       BigInt.from(int.parse(document.documentID)),
       document['name'],
-      items,
+      List<FireKnowledgeItem>(),
     );
 
     return result;
