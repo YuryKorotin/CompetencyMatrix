@@ -97,7 +97,16 @@ class MatrixRepositoryDb extends BaseMatrixRepository {
               false,
               0));
     }
-    return matrices;
+
+    List<MatrixEntity> matricesWithProgress = List();
+
+    for (MatrixEntity matrix in matrices) {
+      var matrixFilled = await matrixWithProgress(matrix);
+
+      matricesWithProgress.add(matrixFilled);
+    }
+
+    return matricesWithProgress;
   }
 
   Future<List<LevelDb>> getLevels(BigInt knowledgeItemId) async {

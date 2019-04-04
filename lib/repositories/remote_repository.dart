@@ -21,7 +21,17 @@ class RemoteRepository extends BaseMatrixRepository {
         .collection('matrices')
         .getDocuments();
 
-    return matrices;
+    snapshots.documents.forEach((snapshot) => matrices.add(FireMatrix.fromDocument(snapshot)));
+
+    List<MatrixEntity> matricesWithProgress = List();
+
+    for (MatrixEntity matrix in matrices) {
+      var matrixFilled = await matrixWithProgress(matrix);
+
+      matricesWithProgress.add(matrixFilled);
+    }
+
+    return matricesWithProgress;
   }
 
   @override
