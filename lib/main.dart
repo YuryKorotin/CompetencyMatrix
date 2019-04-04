@@ -267,13 +267,13 @@ class _MyHomePageState extends State<MyHomePage> {
   BigInt findNewId() {
     var maxId = this._originItems.first.id;
 
-    for(Matrix matrix in this._originItems) {
+    for(MatrixEntity matrix in this._originItems) {
       if (maxId < matrix.id) {
         maxId = matrix.id;
       }
     }
 
-    for(MatrixDb matrix in this._userItems) {
+    for(MatrixEntity matrix in this._userItems) {
       if (maxId < matrix.id) {
         maxId = matrix.id;
       }

@@ -272,7 +272,7 @@ class MatrixRepositoryDb extends BaseMatrixRepository {
   Future<MatrixEntity> matrixWithProgress(MatrixEntity matrix) async {
 
     MatrixStatistics statistics = MatrixStatistics(matrix.id);
-    var matrixProgress = await statistics.getMatrixProgress();
+    var matrixProgress = await statistics.getMatrixProgressFromDb();
 
     return new MatrixDb(
         matrix.id,
