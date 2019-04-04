@@ -47,8 +47,9 @@ class MatrixStatistics {
   }
 
   Future<HashMap<String, int>> getLevelsStatisticsForDb() async {
-    var matrixDescription = await matrixDbRepository.getMatrix(this._matrixId);
-    var items = matrixDescription.items;
+    var matrixDescription = await matrixDbRepository.loadSingle(this._matrixId);
+
+    var items = matrixDescription.matrixDetail.items;
 
     var statistics = HashMap<String, int>();
     statistics[Consts.BASE_KNOWLEDGE_LEVEL] = 0;
