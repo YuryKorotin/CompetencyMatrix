@@ -6,6 +6,7 @@ import 'package:competency_matrix/repositories/matrix_repository.dart';
 import 'package:competency_matrix/repositories/matrix_repository_db.dart';
 import 'package:competency_matrix/repositories/remote_repository.dart';
 import 'package:competency_matrix/screens/matrix_detail_creation_screen.dart';
+import 'package:competency_matrix/screens/matrix_detail_edit_screen.dart';
 import 'package:competency_matrix/screens/matrix_editable_detail_screen.dart';
 import 'package:competency_matrix/utils/colors_provider.dart';
 import 'package:competency_matrix/utils/dialog_helper.dart';
@@ -194,9 +195,19 @@ class _MyHomePageState extends State<MyHomePage> {
         new ActionItems(
             icon: new IconButton(
               icon: new Icon(Icons.mode_edit),
-              onPressed: () {},
+              onPressed: () {
+
+              },
               color: Colors.blue,
-        ), onPress: (){},  backgroudColor: Colors.grey),
+        ), onPress: (){
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) =>
+                  MatrixDetailEditScreen(() => refresh(), item.id),
+            ),
+          );
+        },  backgroudColor: Colors.grey),
         //new ActionItems(icon: new IconButton(  icon: new Icon(Icons.bookmark),
         //  onPressed: () {}, color: Colors.orange,
         //), onPress: (){},  backgroudColor: Colors.blueGrey),

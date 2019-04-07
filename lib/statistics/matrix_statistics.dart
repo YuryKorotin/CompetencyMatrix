@@ -36,7 +36,7 @@ class MatrixStatistics {
     for (KnowledgeItemEntity item in items) {
       var levels = item.levels;
       var lastName = levels.first.name;
-      for (KnowledgeLevel level in levels) {
+      for (KnowledgeLevelEntity level in levels) {
         if (level.isChecked) {
           lastName = level.name;
         }

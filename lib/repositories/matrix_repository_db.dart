@@ -92,8 +92,8 @@ class MatrixRepositoryDb extends BaseMatrixRepository {
           new MatrixDb(
               BigInt.from(list[i][ID_COLUMN_NAME]),
               list[i][NAME_COLUMN_NAME],
-              list[i][CATEGORY_COLUMN_NAME],
               list[i][DESCRITPION_COLUMN_NAME],
+              list[i][CATEGORY_COLUMN_NAME],
               false,
               0));
     }
@@ -107,6 +107,19 @@ class MatrixRepositoryDb extends BaseMatrixRepository {
     }
 
     return matricesWithProgress;
+  }
+
+  Future<MatrixEntity> loadForEdit(BigInt id) async {
+    var dbClient = await db;
+    List<Map> list = await dbClient.rawQuery('SELECT * FROM $MATRIX_TABLE_NAME WHERE $ID_COLUMN_NAME=$id');
+    MatrixDb matrix = new MatrixDb(
+              BigInt.from(list[0][ID_COLUMN_NAME]),
+              list[0][NAME_COLUMN_NAME],
+              list[0][DESCRITPION_COLUMN_NAME],
+              list[0][CATEGORY_COLUMN_NAME],
+              false,
+              0);
+    return matrix;
   }
 
   Future<List<LevelDb>> getLevels(BigInt knowledgeItemId) async {
@@ -196,6 +209,22 @@ class MatrixRepositoryDb extends BaseMatrixRepository {
         parsedItem,
         dependentLevelsToCheck,
         dependentLevelsToUncheck);
+  }
+
+  void update(MatrixDb matrix) async {
+    var dbClient = await db;
+    var id = matrix.id;
+    var name = matrix.name;
+    var description = matrix.description;
+    var category = matrix.category;
+    await dbClient.transaction((txn) async {
+      return await txn.rawUpdate(
+          '''UPDATE $MATRIX_TABLE_NAME SET 
+          $NAME_COLUMN_NAME=\'$name\', 
+          $CATEGORY_COLUMN_NAME=\'$category\', 
+          $DESCRITPION_COLUMN_NAME=\'$description\'
+          WHERE $ID_COLUMN_NAME=$id''');
+    });
   }
 
   void saveMatrix(MatrixDb matrix) async {
