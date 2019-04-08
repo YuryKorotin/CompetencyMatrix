@@ -21,6 +21,11 @@ class KnowledgeDetailCreationScreen extends StatefulWidget {
 class KnowledgeCreationState extends State<KnowledgeDetailCreationScreen> {
 
   KnowledgeCreationState(this.updateMatrix, this.matrixId) {
+    title = "Creation of knowledge item";
+    actionButtonName = 'Create';
+  }
+
+  void initState() {
     List<LevelDb> levels = new List<LevelDb>();
     var names = Consts.KNOWLEDGE_TO_HUMAN_MAP.keys.toList();
 
@@ -33,10 +38,12 @@ class KnowledgeCreationState extends State<KnowledgeDetailCreationScreen> {
           ));
     }
 
-    knowledgeItemDb = new KnowledgeItemDb(
-        BigInt.from(0),
-        "",
-        levels);
+    setState(() {
+      knowledgeItemDb = new KnowledgeItemDb(
+          BigInt.from(0),
+          "",
+          levels);
+    });
   }
 
   KnowledgeItemDb knowledgeItemDb;
@@ -44,17 +51,22 @@ class KnowledgeCreationState extends State<KnowledgeDetailCreationScreen> {
   String name;
   String description;
   String category;
+
+  String title;
+  String actionButtonName;
+
   final scaffoldKey = new GlobalKey<ScaffoldState>();
   final formKey = new GlobalKey<FormState>();
   final void Function() updateMatrix;
   final BigInt matrixId;
+  var repository = MatrixRepositoryDb();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: scaffoldKey,
       appBar: AppBar(
-        title: Text("Creation of knowledge item"),
+        title: Text(title),
           actions: <Widget>[
             new IconButton(
               icon: const Icon(Icons.view_list),
@@ -79,11 +91,17 @@ class KnowledgeCreationState extends State<KnowledgeDetailCreationScreen> {
 
   List<Widget> fieldsForLevels() {
     List<Widget> resultList = List<Widget>();
+
+    if (knowledgeItemDb == null) {
+      return resultList;
+    }
+
     resultList.add(new TextFormField(
       keyboardType: TextInputType.text,
       decoration: new InputDecoration(labelText: 'Name'),
       validator: (val) =>
       val.length == 0  || val.length > 30 ? "Enter right name" : null,
+      initialValue: knowledgeItemDb.name,
       onSaved: (val) => this.knowledgeItemDb.name = val,
     ));
     for (LevelDb levelDb in knowledgeItemDb.levels) {
@@ -91,30 +109,34 @@ class KnowledgeCreationState extends State<KnowledgeDetailCreationScreen> {
       resultList.add(new TextFormField(
         keyboardType: TextInputType.text,
         decoration: new InputDecoration(labelText: "$name description"),
+        initialValue: levelDb.description,
         validator: (val) =>
           val.length == 0 || val.length > 60 ? 'Enter right $name description' : null,
         onSaved: (val) => levelDb.description = val,
       ));
     }
 
-    resultList.add(new Container(margin: const EdgeInsets.only(top: 10.0),child: new RaisedButton(onPressed: _submit,
-      child: new Text('Create'),),));
+    resultList.add(
+        new Container(
+          margin: const EdgeInsets.only(top: 10.0),
+          child: new RaisedButton(
+            onPressed: submit,
+            child: new Text(actionButtonName))));
 
     return resultList;
   }
 
-  void _submit() {
+  void submit() {
     if (this.formKey.currentState.validate()) {
       formKey.currentState.save();
     }else{
       return null;
     }
-    var repository = MatrixRepositoryDb();
     repository.saveKnowledgeItem(knowledgeItemDb, matrixId);
-    _showSnackBar("Data saved successfully");
+    showSnackBar("Data saved successfully");
   }
 
-  void _showSnackBar(String text) {
+  void showSnackBar(String text) {
     scaffoldKey.currentState
         .showSnackBar(new SnackBar(content: new Text(text)));
     navigateToMatrix();

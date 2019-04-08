@@ -4,6 +4,7 @@ import 'package:competency_matrix/interactors/matrix_detail_interactor.dart';
 import 'package:competency_matrix/repositories/matrix_repository.dart';
 import 'package:competency_matrix/repositories/matrix_repository_db.dart';
 import 'package:competency_matrix/screens/knowledge_detail_creation_screen.dart';
+import 'package:competency_matrix/screens/knowledge_detail_edit_screen.dart';
 import 'package:competency_matrix/utils/dialog_helper.dart';
 import 'package:competency_matrix/utils/matrix_preferences.dart';
 import 'package:competency_matrix/view/builders/matrix_detail_builder.dart';
@@ -159,7 +160,7 @@ class KnowledgeEditableListState extends State<KnowledgeEditableListWidget> {
               context,
               MaterialPageRoute(
                 builder: (context) =>
-                    KnowledgeDetailCreationScreen(() => refresh(), item.id),
+                    KnowledgeDetailEditScreen(() => refresh(), _matrixId, item.id),
               ),
             );
           },  backgroudColor: Colors.grey),

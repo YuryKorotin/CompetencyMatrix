@@ -34,8 +34,7 @@ class MatrixRepositoryDb extends BaseMatrixRepository {
   static Database _db;
 
   Future<Database> get db async {
-    if(_db != null)
-      return _db;
+    if (_db != null) return _db;
     _db = await initDb();
     return _db;
   }
@@ -54,16 +53,14 @@ class MatrixRepositoryDb extends BaseMatrixRepository {
   // Creating a table name Matrix with fields
   void _onCreate(Database db, int version) async {
     // When creating the db, create the table
-    await db.execute(
-        """CREATE TABLE $MATRIX_TABLE_NAME
+    await db.execute("""CREATE TABLE $MATRIX_TABLE_NAME
         ($ID_COLUMN_NAME INTEGER PRIMARY KEY, 
         $NAME_COLUMN_NAME TEXT, 
         $CATEGORY_COLUMN_NAME TEXT, 
         $DESCRITPION_COLUMN_NAME TEXT)
         """);
 
-    await db.execute(
-        """CREATE TABLE $KNOWLEDGE_ITEMS_TABLE_NAME
+    await db.execute("""CREATE TABLE $KNOWLEDGE_ITEMS_TABLE_NAME
         ($ID_COLUMN_NAME INTEGER PRIMARY KEY, 
         $NAME_COLUMN_NAME TEXT,
         $MATRIX_ID_COLUMN_NAME INTEGER NOT NULL,
@@ -71,8 +68,7 @@ class MatrixRepositoryDb extends BaseMatrixRepository {
         REFERENCES $MATRIX_TABLE_NAME($ID_COLUMN_NAME) ON DELETE CASCADE
         )""");
 
-    await db.execute(
-        """CREATE TABLE $LEVELS_TABLE_NAME
+    await db.execute("""CREATE TABLE $LEVELS_TABLE_NAME
         ($ID_COLUMN_NAME INTEGER PRIMARY KEY, 
         $NAME_COLUMN_NAME TEXT, 
         $DESCRITPION_COLUMN_NAME TEXT,
@@ -85,17 +81,17 @@ class MatrixRepositoryDb extends BaseMatrixRepository {
   // Retrieving matrices from Matrix Tables
   Future<List<MatrixEntity>> load() async {
     var dbClient = await db;
-    List<Map> list = await dbClient.rawQuery('SELECT * FROM $MATRIX_TABLE_NAME');
+    List<Map> list =
+        await dbClient.rawQuery('SELECT * FROM $MATRIX_TABLE_NAME');
     List<MatrixDb> matrices = new List();
     for (int i = 0; i < list.length; i++) {
-      matrices.add(
-          new MatrixDb(
-              BigInt.from(list[i][ID_COLUMN_NAME]),
-              list[i][NAME_COLUMN_NAME],
-              list[i][DESCRITPION_COLUMN_NAME],
-              list[i][CATEGORY_COLUMN_NAME],
-              false,
-              0));
+      matrices.add(new MatrixDb(
+          BigInt.from(list[i][ID_COLUMN_NAME]),
+          list[i][NAME_COLUMN_NAME],
+          list[i][DESCRITPION_COLUMN_NAME],
+          list[i][CATEGORY_COLUMN_NAME],
+          false,
+          0));
     }
 
     List<MatrixEntity> matricesWithProgress = List();
@@ -111,56 +107,64 @@ class MatrixRepositoryDb extends BaseMatrixRepository {
 
   Future<MatrixEntity> loadForEdit(BigInt id) async {
     var dbClient = await db;
-    List<Map> list = await dbClient.rawQuery('SELECT * FROM $MATRIX_TABLE_NAME WHERE $ID_COLUMN_NAME=$id');
+    List<Map> list = await dbClient
+        .rawQuery('SELECT * FROM $MATRIX_TABLE_NAME WHERE $ID_COLUMN_NAME=$id');
     MatrixDb matrix = new MatrixDb(
-              BigInt.from(list[0][ID_COLUMN_NAME]),
-              list[0][NAME_COLUMN_NAME],
-              list[0][DESCRITPION_COLUMN_NAME],
-              list[0][CATEGORY_COLUMN_NAME],
-              false,
-              0);
+        BigInt.from(list[0][ID_COLUMN_NAME]),
+        list[0][NAME_COLUMN_NAME],
+        list[0][DESCRITPION_COLUMN_NAME],
+        list[0][CATEGORY_COLUMN_NAME],
+        false,
+        0);
     return matrix;
+  }
+
+  Future<KnowledgeItemDb> getKnowledgeItemForEdit(BigInt itemId) async {
+    var dbClient = await db;
+    List<Map> list = await dbClient.rawQuery(
+        'SELECT * FROM $KNOWLEDGE_ITEMS_TABLE_NAME WHERE $ID_COLUMN_NAME=$itemId');
+    KnowledgeItemDb knowledgeItem = new KnowledgeItemDb(
+          BigInt.from(list[0][ID_COLUMN_NAME]),
+          list[0][NAME_COLUMN_NAME],
+          await getLevels(BigInt.from(list[0][ID_COLUMN_NAME])));
+    return knowledgeItem;
   }
 
   Future<List<LevelDb>> getLevels(BigInt knowledgeItemId) async {
     var dbClient = await db;
     List<Map> list =
-    await dbClient.rawQuery(
-        """SELECT * FROM $LEVELS_TABLE_NAME 
+        await dbClient.rawQuery("""SELECT * FROM $LEVELS_TABLE_NAME 
         WHERE $KNOWLEDGE_ITEM_ID_COLUMN_NAME=$knowledgeItemId""");
     List<LevelDb> levels = new List();
     for (int i = 0; i < list.length; i++) {
-      levels.add(
-          new LevelDb(
-              BigInt.from(list[i][ID_COLUMN_NAME]),
-              list[i][NAME_COLUMN_NAME],
-              list[i][DESCRITPION_COLUMN_NAME]
-          ));
+      levels.add(new LevelDb(BigInt.from(list[i][ID_COLUMN_NAME]),
+          list[i][NAME_COLUMN_NAME], list[i][DESCRITPION_COLUMN_NAME]));
     }
     return levels;
   }
 
   Future<List<KnowledgeItemDb>> getKnowledgeItems(BigInt matrixId) async {
     var dbClient = await db;
-    List<Map> list = await dbClient.rawQuery('SELECT * FROM $KNOWLEDGE_ITEMS_TABLE_NAME WHERE $MATRIX_ID_COLUMN_NAME=$matrixId');
+    List<Map> list = await dbClient.rawQuery(
+        'SELECT * FROM $KNOWLEDGE_ITEMS_TABLE_NAME WHERE $MATRIX_ID_COLUMN_NAME=$matrixId');
     List<KnowledgeItemDb> knowledgeItems = new List();
     for (int i = 0; i < list.length; i++) {
-      knowledgeItems.add(
-          new KnowledgeItemDb(
-              BigInt.from(list[i][ID_COLUMN_NAME]),
-              list[i][NAME_COLUMN_NAME],
-              await getLevels(BigInt.from(list[i][ID_COLUMN_NAME]))));
-  }
+      knowledgeItems.add(new KnowledgeItemDb(
+          BigInt.from(list[i][ID_COLUMN_NAME]),
+          list[i][NAME_COLUMN_NAME],
+          await getLevels(BigInt.from(list[i][ID_COLUMN_NAME]))));
+    }
     return knowledgeItems;
   }
 
   Future<MatrixDetailEntity> getMatrix(BigInt id) async {
     var dbClient = await db;
-    List<Map> list = await dbClient.rawQuery('SELECT * FROM $MATRIX_TABLE_NAME WHERE $ID_COLUMN_NAME=$id');
+    List<Map> list = await dbClient
+        .rawQuery('SELECT * FROM $MATRIX_TABLE_NAME WHERE $ID_COLUMN_NAME=$id');
     MatrixDetailDb matrix = new MatrixDetailDb(
-      BigInt.from(list[0][ID_COLUMN_NAME]),
-      list[0][NAME_COLUMN_NAME],
-      await getKnowledgeItems(BigInt.from(list[0][ID_COLUMN_NAME])));
+        BigInt.from(list[0][ID_COLUMN_NAME]),
+        list[0][NAME_COLUMN_NAME],
+        await getKnowledgeItems(BigInt.from(list[0][ID_COLUMN_NAME])));
 
     return matrix;
   }
@@ -202,13 +206,10 @@ class MatrixRepositoryDb extends BaseMatrixRepository {
 
         dependentLevelsToUncheck[level.id] = levelsCopy;
       }
-
     }
 
     return new MatrixLoadResult.origin(
-        parsedItem,
-        dependentLevelsToCheck,
-        dependentLevelsToUncheck);
+        parsedItem, dependentLevelsToCheck, dependentLevelsToUncheck);
   }
 
   void update(MatrixDb matrix) async {
@@ -218,8 +219,7 @@ class MatrixRepositoryDb extends BaseMatrixRepository {
     var description = matrix.description;
     var category = matrix.category;
     await dbClient.transaction((txn) async {
-      return await txn.rawUpdate(
-          '''UPDATE $MATRIX_TABLE_NAME SET 
+      return await txn.rawUpdate('''UPDATE $MATRIX_TABLE_NAME SET 
           $NAME_COLUMN_NAME=\'$name\', 
           $CATEGORY_COLUMN_NAME=\'$category\', 
           $DESCRITPION_COLUMN_NAME=\'$description\'
@@ -269,6 +269,34 @@ class MatrixRepositoryDb extends BaseMatrixRepository {
     saveLevels(item);
   }
 
+  void updateKnowledgeItem(KnowledgeItemDb item) async {
+    var dbClient = await db;
+    var id = await dbClient.transaction((txn) async {
+      var name = item.name;
+      var id = item.id;
+      var queryString = """UPDATE $KNOWLEDGE_ITEMS_TABLE_NAME
+          SET $NAME_COLUMN_NAME=\'$name\' 
+          WHERE $ID_COLUMN_NAME=\'$id\'""";
+      return await txn.rawUpdate(queryString);
+    });
+
+    updateLevels(item);
+  }
+
+  void updateLevels(KnowledgeItemDb item) async {
+    var dbClient = await db;
+    for (LevelDb levelDb in item.levels) {
+      dbClient.transaction((txn) async {
+        var id = levelDb.id.toString();
+        var description = levelDb.description;
+        var queryString = """UPDATE $LEVELS_TABLE_NAME
+          SET $DESCRITPION_COLUMN_NAME=\'$description\'
+          WHERE $ID_COLUMN_NAME=\'$id\'""";
+        return await txn.rawInsert(queryString);
+      });
+    }
+  }
+
   void deleteMatrix(BigInt matrixId) async {
     var dbClient = await db;
     await dbClient.transaction((txn) async {
@@ -307,16 +335,10 @@ class MatrixRepositoryDb extends BaseMatrixRepository {
 
   @override
   Future<MatrixEntity> matrixWithProgress(MatrixEntity matrix) async {
-
     MatrixStatistics statistics = MatrixStatistics(matrix.id);
     var matrixProgress = await statistics.getMatrixProgressFromDb();
 
-    return new MatrixDb(
-        matrix.id,
-        matrix.name,
-        matrix.description,
-        matrix.category,
-        true,
-        matrixProgress);
+    return new MatrixDb(matrix.id, matrix.name, matrix.description,
+        matrix.category, true, matrixProgress);
   }
 }
