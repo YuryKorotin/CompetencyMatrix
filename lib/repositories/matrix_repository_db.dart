@@ -277,6 +277,14 @@ class MatrixRepositoryDb extends BaseMatrixRepository {
     });
   }
 
+  void deleteKnowledgeItem(BigInt id) async {
+    var dbClient = await db;
+    await dbClient.transaction((txn) async {
+      return await txn.rawInsert(
+          'DELETE FROM $KNOWLEDGE_ITEMS_TABLE_NAME WHERE $ID_COLUMN_NAME=$id');
+    });
+  }
+
   void saveLevels(KnowledgeItemDb item) async {
     var dbClient = await db;
     for (LevelDb levelDb in item.levels) {

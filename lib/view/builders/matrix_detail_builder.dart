@@ -14,6 +14,7 @@ class MatrixDetailBuilder {
     for (final item in parsedItem.items) {
 
       HeadingItem header = HeadingItem(item.name);
+      header.id = item.id;
       viewItems.add(header);
       for (final level in item.levels) {
         var itemName = level.name;
