@@ -106,12 +106,15 @@ class RemoteRepository extends BaseMatrixRepository {
 
   @override
   Future<MatrixLoadResult> loadSingle(BigInt id) async {
-
     MatrixDetailEntity parsedItem = await getMatrix(id);
 
-    MatrixPreferences preferences = MatrixPreferences(id);
+    return getLoadResult(parsedItem);
+  }
 
-    var levels = await preferences.getChosenLevels(id);
+  Future<MatrixLoadResult> getLoadResult(MatrixDetailEntity parsedItem) async {
+    MatrixPreferences preferences = MatrixPreferences(parsedItem.id);
+
+    var levels = await preferences.getChosenLevels(parsedItem.id);
     var dependentLevelsToCheck = new HashMap<BigInt, List<BigInt>>();
     var dependentLevelsToUncheck = new HashMap<BigInt, List<BigInt>>();
 
@@ -151,5 +154,4 @@ class RemoteRepository extends BaseMatrixRepository {
         dependentLevelsToCheck,
         dependentLevelsToUncheck);
   }
-
 }

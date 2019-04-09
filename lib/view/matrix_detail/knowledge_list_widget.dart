@@ -2,6 +2,7 @@ import 'dart:collection';
 
 import 'package:competency_matrix/interactors/matrix_detail_interactor.dart';
 import 'package:competency_matrix/repositories/base_matrix_repository.dart';
+import 'package:competency_matrix/repositories/matrix_fire_repository.dart';
 import 'package:competency_matrix/repositories/matrix_repository.dart';
 import 'package:competency_matrix/repositories/remote_repository.dart';
 import 'package:competency_matrix/utils/matrix_preferences.dart';
@@ -29,7 +30,7 @@ class KnowledgeListState extends State<KnowledgeListWidget> {
   HashMap<BigInt, List<BigInt>> _levelSchemeToUncheck;
 
   MatrixDetailInteractor interactor = MatrixDetailInteractor();
-  BaseMatrixRepository matrixRepository = RemoteRepository();
+  BaseMatrixRepository matrixRepository = MatrixFireRepository(RemoteRepository());
   MatrixPreferences matrixPreferences;
   MatrixDetailBuilder viewModelBuilder = MatrixDetailBuilder();
   final void Function() updateMatrices;

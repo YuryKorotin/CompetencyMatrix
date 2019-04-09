@@ -1,4 +1,5 @@
 import 'package:competency_matrix/repositories/base_matrix_repository.dart';
+import 'package:competency_matrix/repositories/matrix_fire_repository.dart';
 import 'package:competency_matrix/repositories/matrix_repository.dart';
 import 'package:competency_matrix/repositories/remote_repository.dart';
 import 'package:competency_matrix/statistics/knowledge_progress.dart';
@@ -41,7 +42,7 @@ class KnowledgeDiagramState extends State<DiagramWidget> {
 
   @override
   void initState() {
-    matrixRepository = RemoteRepository();
+    matrixRepository = MatrixFireRepository(RemoteRepository());
 
     _statistics.getLevelsStatistics().then((statisticsMap) =>
         setState(() {

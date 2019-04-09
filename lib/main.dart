@@ -2,6 +2,7 @@ import 'package:competency_matrix/database/models/matrix_db.dart';
 import 'package:competency_matrix/entities/matrix_entity.dart';
 import 'package:competency_matrix/net/models/matrix.dart';
 import 'package:competency_matrix/repositories/base_matrix_repository.dart';
+import 'package:competency_matrix/repositories/matrix_fire_repository.dart';
 import 'package:competency_matrix/repositories/matrix_repository.dart';
 import 'package:competency_matrix/repositories/matrix_repository_db.dart';
 import 'package:competency_matrix/repositories/remote_repository.dart';
@@ -54,7 +55,7 @@ class _MyHomePageState extends State<MyHomePage> {
   List<ListItem> items;
   List<MatrixEntity> _originItems;
   List<MatrixEntity> _userItems = new List();
-  BaseMatrixRepository matrixRepository = RemoteRepository();
+  BaseMatrixRepository matrixRepository = MatrixFireRepository(RemoteRepository());
   MatrixRepositoryDb matrixDbRepository = MatrixRepositoryDb();
   MatrixItemBuilder viewModelBuilder = MatrixItemBuilder();
   ColorsProvider _colorsProvider = ColorsProvider();

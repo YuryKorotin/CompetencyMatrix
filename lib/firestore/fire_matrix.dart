@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:competency_matrix/entities/matrix_entity.dart';
 
 class FireMatrix extends MatrixEntity {
+  String timestamp = "";
   FireMatrix(BigInt id,
       String name,
       String description,

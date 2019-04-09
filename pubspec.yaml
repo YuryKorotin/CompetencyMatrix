@@ -31,10 +31,12 @@ dependencies:
   test: ^1.5.3
   firebase_core: ^0.3.0
   cloud_firestore: ^0.9.7+2
+  dcache: ^0.2.0
+
+dependency_overrides:
+  meta: 1.1.7
 
 dev_dependencies:
-  flutter_test:
-    sdk: flutter
   flutter_launcher_icons: "^0.7.0"
 
 flutter_icons:
