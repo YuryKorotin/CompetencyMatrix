@@ -137,12 +137,12 @@ class _MyHomePageState extends State<MyHomePage> {
     var itemContentWidget = ListTile(
         trailing: getEditIcon(item),
         leading: CircularPercentIndicator(
-          radius: 50.0,
-          lineWidth: 10.0,
+          radius: 48.0,
+          lineWidth: 8.0,
           percent: progress / 100,
           center: new Icon(
             Icons.person_pin,
-            size: 30.0,
+            size: 33.0,
             color: _colorsProvider.getColorByProgress(progress),
           ),
           backgroundColor: Colors.grey,
@@ -214,7 +214,7 @@ class _MyHomePageState extends State<MyHomePage> {
         //), onPress: (){},  backgroudColor: Colors.blueGrey),
       ],
       child: new Container(
-          padding: const EdgeInsets.only(top:10.0),
+          padding: const EdgeInsets.only(top:5.0, bottom: 5.0),
           width: 200.0,
           height: 80.0,
           child: itemContentWidget,

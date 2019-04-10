@@ -26,7 +26,7 @@ class MatrixRepositoryDb extends BaseMatrixRepository {
   static const String ID_COLUMN_NAME = "id";
   static const String NAME_COLUMN_NAME = "name";
   static const String CATEGORY_COLUMN_NAME = "category";
-  static const String DESCRITPION_COLUMN_NAME = "description";
+  static const String DESCRIPTION_COLUMN_NAME = "description";
 
   static const String MATRIX_ID_COLUMN_NAME = "matrix_id";
   static const String KNOWLEDGE_ITEM_ID_COLUMN_NAME = "knowledge_item_id";
@@ -57,7 +57,7 @@ class MatrixRepositoryDb extends BaseMatrixRepository {
         ($ID_COLUMN_NAME INTEGER PRIMARY KEY, 
         $NAME_COLUMN_NAME TEXT, 
         $CATEGORY_COLUMN_NAME TEXT, 
-        $DESCRITPION_COLUMN_NAME TEXT)
+        $DESCRIPTION_COLUMN_NAME TEXT)
         """);
 
     await db.execute("""CREATE TABLE $KNOWLEDGE_ITEMS_TABLE_NAME
@@ -71,7 +71,7 @@ class MatrixRepositoryDb extends BaseMatrixRepository {
     await db.execute("""CREATE TABLE $LEVELS_TABLE_NAME
         ($ID_COLUMN_NAME INTEGER PRIMARY KEY, 
         $NAME_COLUMN_NAME TEXT, 
-        $DESCRITPION_COLUMN_NAME TEXT,
+        $DESCRIPTION_COLUMN_NAME TEXT,
         $KNOWLEDGE_ITEM_ID_COLUMN_NAME INTEGER NOT NULL,
         FOREIGN KEY ($KNOWLEDGE_ITEM_ID_COLUMN_NAME) 
         REFERENCES $KNOWLEDGE_ITEMS_TABLE_NAME($ID_COLUMN_NAME) ON DELETE CASCADE
@@ -88,7 +88,7 @@ class MatrixRepositoryDb extends BaseMatrixRepository {
       matrices.add(new MatrixDb(
           BigInt.from(list[i][ID_COLUMN_NAME]),
           list[i][NAME_COLUMN_NAME],
-          list[i][DESCRITPION_COLUMN_NAME],
+          list[i][DESCRIPTION_COLUMN_NAME],
           list[i][CATEGORY_COLUMN_NAME],
           false,
           0));
@@ -112,7 +112,7 @@ class MatrixRepositoryDb extends BaseMatrixRepository {
     MatrixDb matrix = new MatrixDb(
         BigInt.from(list[0][ID_COLUMN_NAME]),
         list[0][NAME_COLUMN_NAME],
-        list[0][DESCRITPION_COLUMN_NAME],
+        list[0][DESCRIPTION_COLUMN_NAME],
         list[0][CATEGORY_COLUMN_NAME],
         false,
         0);
@@ -138,7 +138,7 @@ class MatrixRepositoryDb extends BaseMatrixRepository {
     List<LevelDb> levels = new List();
     for (int i = 0; i < list.length; i++) {
       levels.add(new LevelDb(BigInt.from(list[i][ID_COLUMN_NAME]),
-          list[i][NAME_COLUMN_NAME], list[i][DESCRITPION_COLUMN_NAME]));
+          list[i][NAME_COLUMN_NAME], list[i][DESCRIPTION_COLUMN_NAME]));
     }
     return levels;
   }
@@ -222,7 +222,7 @@ class MatrixRepositoryDb extends BaseMatrixRepository {
       return await txn.rawUpdate('''UPDATE $MATRIX_TABLE_NAME SET 
           $NAME_COLUMN_NAME=\'$name\', 
           $CATEGORY_COLUMN_NAME=\'$category\', 
-          $DESCRITPION_COLUMN_NAME=\'$description\'
+          $DESCRIPTION_COLUMN_NAME=\'$description\'
           WHERE $ID_COLUMN_NAME=$id''');
     });
   }
@@ -231,7 +231,7 @@ class MatrixRepositoryDb extends BaseMatrixRepository {
     var dbClient = await db;
     await dbClient.transaction((txn) async {
       return await txn.rawInsert(
-          'INSERT INTO $MATRIX_TABLE_NAME($ID_COLUMN_NAME, $NAME_COLUMN_NAME, $CATEGORY_COLUMN_NAME, $DESCRITPION_COLUMN_NAME) VALUES(' +
+          'INSERT INTO $MATRIX_TABLE_NAME($ID_COLUMN_NAME, $NAME_COLUMN_NAME, $CATEGORY_COLUMN_NAME, $DESCRIPTION_COLUMN_NAME) VALUES(' +
               '\'' +
               matrix.id.toString() +
               '\'' +
@@ -290,7 +290,7 @@ class MatrixRepositoryDb extends BaseMatrixRepository {
         var id = levelDb.id.toString();
         var description = levelDb.description;
         var queryString = """UPDATE $LEVELS_TABLE_NAME
-          SET $DESCRITPION_COLUMN_NAME=\'$description\'
+          SET $DESCRIPTION_COLUMN_NAME=\'$description\'
           WHERE $ID_COLUMN_NAME=\'$id\'""";
         return await txn.rawInsert(queryString);
       });
@@ -322,7 +322,7 @@ class MatrixRepositoryDb extends BaseMatrixRepository {
         var name = levelDb.name;
         var queryString = """INSERT INTO $LEVELS_TABLE_NAME
           ($NAME_COLUMN_NAME, 
-           $DESCRITPION_COLUMN_NAME,
+           $DESCRIPTION_COLUMN_NAME,
            $KNOWLEDGE_ITEM_ID_COLUMN_NAME) VALUES(
             \'$name\',
             \'$description\',
