@@ -9,8 +9,8 @@ import 'package:competency_matrix/firestore/fire_matrix_list.dart';
 import 'package:path_provider/path_provider.dart';
 
 class MatrixFileRepository {
-  final const String detailsPath = "matrix_detailed";
-  final const String listPath = "matrix_list";
+  final String detailsPath = "matrix_detailed";
+  final String listPath = "matrix_list";
   Future<String> get _localPath async {
     final directory = await getApplicationDocumentsDirectory();
 
