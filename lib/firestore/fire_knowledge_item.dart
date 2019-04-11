@@ -23,4 +23,20 @@ class FireKnowledgeItem extends KnowledgeItemEntity {
 
     return result;
   }
+
+  factory FireKnowledgeItem.fromJson(Map<String, dynamic> json) {
+    FireKnowledgeItem resultItem =
+    new FireKnowledgeItem(
+        BigInt.from(json['id']),
+        json['name'],
+        json['levels'].map((i) => FireLevel.fromJson(i)).toList());
+    return resultItem;
+  }
+
+  Map<String, dynamic> toJson() =>
+      {
+        'id': id.toInt(),
+        'name': name,
+        'levels': levels.map((item) => (item as FireLevel).toJson())
+      };
 }

@@ -19,4 +19,21 @@ class FireLevel extends KnowledgeLevelEntity{
 
     return result;
   }
+
+  factory FireLevel.fromJson(Map<String, dynamic> json) {
+    FireLevel resultLevel =
+    new FireLevel(
+        BigInt.from(json['id']),
+        json['name'],
+        json['description'],
+        false);
+    return resultLevel;
+  }
+
+  Map<String, dynamic> toJson() =>
+      {
+        'id': id.toInt(),
+        'name': name,
+        'description': description
+      };
 }
