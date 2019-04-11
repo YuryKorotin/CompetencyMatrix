@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:competency_matrix/entities/knowledge_item_entity.dart';
 import 'package:competency_matrix/firestore/fire_level.dart';
@@ -25,11 +27,16 @@ class FireKnowledgeItem extends KnowledgeItemEntity {
   }
 
   factory FireKnowledgeItem.fromJson(Map<String, dynamic> json) {
-    FireKnowledgeItem resultItem =
-    new FireKnowledgeItem(
+    var levels = (json['levels'] as List).map((i) => FireLevel.fromJson(i)).toList();
+
+    print(levels);
+
+    print(json);
+
+    FireKnowledgeItem resultItem = new FireKnowledgeItem(
         BigInt.from(json['id']),
         json['name'],
-        json['levels'].map((i) => FireLevel.fromJson(i)).toList());
+        levels);
     return resultItem;
   }
 
@@ -37,6 +44,6 @@ class FireKnowledgeItem extends KnowledgeItemEntity {
       {
         'id': id.toInt(),
         'name': name,
-        'levels': levels.map((item) => (item as FireLevel).toJson())
+        'levels': levels.map((item) => (item as FireLevel).toJson()).toList()
       };
 }

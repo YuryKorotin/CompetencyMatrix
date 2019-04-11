@@ -22,6 +22,6 @@ class FireMatrixList {
   List<Map<String, dynamic>> toJson() {
     return matrices.map((firematrix) =>
       firematrix.toJson()
-    );
+    ).toList();
   }
 }

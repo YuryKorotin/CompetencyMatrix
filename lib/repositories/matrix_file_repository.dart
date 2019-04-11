@@ -34,8 +34,8 @@ class MatrixFileRepository {
     return file.exists();
   }
 
-  Future<List<MatrixEntity>> readList() async {
-    List<MatrixEntity> result = new List<MatrixEntity>();
+  Future<List<FireMatrix>> readList() async {
+    List<FireMatrix> result = new List<FireMatrix>();
 
     try {
       final file = await getlocalFile(listPath);
@@ -61,13 +61,14 @@ class MatrixFileRepository {
     return file.writeAsString(json.encode(matrixList.toJson()));
   }
 
-  Future<MatrixDetailEntity> readItem(BigInt id) async {
+  Future<FireMatrixDetail> readItem(BigInt id) async {
     MatrixDetailEntity result;
 
     try {
       final file = await getlocalFile(detailsPath + id.toString());
 
       String contents = await file.readAsString();
+      print(contents);
 
       var jsonValue = await json.decode(contents);
 
@@ -83,6 +84,6 @@ class MatrixFileRepository {
   Future<File> writeItem(FireMatrixDetail matrix) async {
     final file = await getlocalFile(detailsPath + matrix.id.toString());
 
-    return file.writeAsString(json.encode(matrix.toJson()));
+    return file.writeAsString(json.encode((matrix).toJson()));
   }
 }

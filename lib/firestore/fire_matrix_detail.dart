@@ -23,11 +23,15 @@ class FireMatrixDetail extends MatrixDetailEntity{
   }
 
   factory FireMatrixDetail.fromJson(Map<String, dynamic> json) {
-    FireMatrixDetail resultMatrix =
-    new FireMatrixDetail(
+
+    var items = (json['items'] as List).map((i) => FireKnowledgeItem.fromJson(i)).toList();
+
+    print(items);
+
+    FireMatrixDetail resultMatrix = new FireMatrixDetail(
         BigInt.from(json['id']),
         json['name'],
-        json['items'].map((i) => FireKnowledgeItem.fromJson(i)).toList());
+        items);
 
     resultMatrix.timestamp = json['timestamp'];
     return resultMatrix;
@@ -37,7 +41,7 @@ class FireMatrixDetail extends MatrixDetailEntity{
       {
         'id': id.toInt(),
         'name': name,
-        'items': items.map((item) => (item as FireKnowledgeItem).toJson()),
+        'items': items.map((item) => (item as FireKnowledgeItem).toJson()).toList(),
         'timestamp': timestamp
       };
 }
