@@ -30,6 +30,8 @@ class FireMatrix extends MatrixEntity {
           json['category'],
           true,
           0);
+
+      resultMatrix.timestamp = json['timestamp'];
       return resultMatrix;
   }
 
@@ -39,5 +41,6 @@ class FireMatrix extends MatrixEntity {
         'name': name,
         'description': description,
         'category': category,
+        'timestamp': timestamp
       };
 }

@@ -28,6 +28,8 @@ class FireMatrixDetail extends MatrixDetailEntity{
         BigInt.from(json['id']),
         json['name'],
         json['items'].map((i) => FireKnowledgeItem.fromJson(i)).toList());
+
+    resultMatrix.timestamp = json['timestamp'];
     return resultMatrix;
   }
 
@@ -35,6 +37,7 @@ class FireMatrixDetail extends MatrixDetailEntity{
       {
         'id': id.toInt(),
         'name': name,
-        'items': items.map((item) => (item as FireKnowledgeItem).toJson())
+        'items': items.map((item) => (item as FireKnowledgeItem).toJson()),
+        'timestamp': timestamp
       };
 }
