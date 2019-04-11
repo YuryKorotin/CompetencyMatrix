@@ -20,4 +20,27 @@ class FireMatrix extends MatrixEntity {
         document['embedded'],
         document['progress']);
   }
+
+  factory FireMatrix.fromJson(Map<String, dynamic> json) {
+      FireMatrix resultMatrix =
+      new FireMatrix(
+          BigInt.from(json['id']),
+          json['name'],
+          json['description'],
+          json['category'],
+          true,
+          0);
+
+      resultMatrix.timestamp = json['timestamp'];
+      return resultMatrix;
+  }
+
+  Map<String, dynamic> toJson() =>
+      {
+        'id': id.toInt(),
+        'name': name,
+        'description': description,
+        'category': category,
+        'timestamp': timestamp
+      };
 }
