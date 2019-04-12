@@ -38,7 +38,7 @@ class MatrixFireRepository extends BaseMatrixRepository {
       print("Read list from cache");
     } else {
       print("Read list from network");
-      List<MatrixEntity> list = await _repository.load();
+      list = await _repository.load();
       var timeStamp = new DateTime.now().millisecondsSinceEpoch.toString();
       var fireList = list.map((matrix) {
         FireMatrix newMatrix = new FireMatrix(matrix.id, matrix.name, matrix.description, matrix.category, true, 0);
@@ -46,10 +46,17 @@ class MatrixFireRepository extends BaseMatrixRepository {
         return newMatrix;
       }).toList();
 
-      print(list);
       await _fileRepository.writeList(fireList);
     }
-    return list;
+    List<MatrixEntity> matricesWithProgress = List();
+
+    for (MatrixEntity matrix in list) {
+      var matrixFilled = await matrixWithProgress(matrix);
+
+      matricesWithProgress.add(matrixFilled);
+    }
+
+    return matricesWithProgress;
   }
 
   @override

@@ -62,6 +62,7 @@ class RemoteRepository extends BaseMatrixRepository {
       print(document.data);
     });
 
+    levelSnapshots.sort((a, b) => int.parse(a.documentID).compareTo(int.parse(b.documentID)));
 
     return levelSnapshots;
   }

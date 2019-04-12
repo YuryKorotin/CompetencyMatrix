@@ -7,6 +7,7 @@ import 'package:competency_matrix/entities/knowledge_level_enity.dart';
 import 'package:competency_matrix/net/models/knowledge_item.dart';
 import 'package:competency_matrix/net/models/knowledge_level.dart';
 import 'package:competency_matrix/repositories/base_matrix_repository.dart';
+import 'package:competency_matrix/repositories/matrix_fire_repository.dart';
 import 'package:competency_matrix/repositories/matrix_repository.dart';
 import 'package:competency_matrix/repositories/matrix_repository_db.dart';
 import 'package:competency_matrix/repositories/remote_repository.dart';
@@ -19,7 +20,7 @@ class MatrixStatistics {
 
   MatrixStatistics(BigInt matrixId) {
     this._matrixId = matrixId;
-    matrixRepository = RemoteRepository();
+    matrixRepository = MatrixFireRepository(RemoteRepository());
     matrixDbRepository = MatrixRepositoryDb();
   }
 
