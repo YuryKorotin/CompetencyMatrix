@@ -6,6 +6,7 @@ import 'package:competency_matrix/repositories/matrix_fire_repository.dart';
 import 'package:competency_matrix/repositories/matrix_repository.dart';
 import 'package:competency_matrix/repositories/remote_repository.dart';
 import 'package:competency_matrix/utils/matrix_preferences.dart';
+import 'package:competency_matrix/vendor/barprogressindicator.dart';
 import 'package:competency_matrix/view/builders/matrix_detail_builder.dart';
 import 'package:competency_matrix/view/models/heading_item.dart';
 import 'package:competency_matrix/view/models/knowledge_item.dart';
@@ -57,7 +58,15 @@ class KnowledgeListState extends State<KnowledgeListWidget> {
       widget = new Center(
         child: new Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[JumpingDotsProgressIndicator(fontSize: 20.0)],
+          children: <Widget>[BarProgressIndicator(
+            numberOfBars: 4,
+            color: Colors.grey,
+            fontSize: 10.0,
+            barSpacing: 2.0,
+            beginTweenValue: 5.0,
+            endTweenValue: 10.0,
+            milliseconds: 200,
+          )],
         ),
       ); // This trailing comma makes auto-formatting nicer for build methods.
       return widget;
