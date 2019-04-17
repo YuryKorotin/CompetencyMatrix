@@ -81,9 +81,10 @@ class KnowledgeCreationState extends State<KnowledgeDetailCreationScreen> {
         padding: const EdgeInsets.all(16.0),
         child: new Form(
           key: formKey,
-          child: new Column(
-            children: fieldsForLevels()
-          ),
+          child: ListView(
+            shrinkWrap: true,
+            padding: EdgeInsets.all(8.0),
+            children: fieldsForLevels())
         ),
       ),
     );
