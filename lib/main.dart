@@ -22,6 +22,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 void main() {
   runApp(CompetencyMatrixApp());
@@ -56,7 +57,8 @@ class _MyHomePageState extends State<MyHomePage> {
   List<ListItem> items;
   List<MatrixEntity> _originItems;
   List<MatrixEntity> _userItems = new List();
-  BaseMatrixRepository matrixRepository = MatrixFireRepository(RemoteRepository());
+  BaseMatrixRepository matrixRepository =
+      MatrixFireRepository(RemoteRepository());
   MatrixRepositoryDb matrixDbRepository = MatrixRepositoryDb();
   MatrixItemBuilder viewModelBuilder = MatrixItemBuilder();
   ColorsProvider _colorsProvider = ColorsProvider();
@@ -67,14 +69,16 @@ class _MyHomePageState extends State<MyHomePage> {
     matrixRepository
         .load()
         .then((parsedItems) => setState(() {
-          this.items = viewModelBuilder.buildFromLoadedItems(parsedItems);
-          this._originItems = parsedItems;
-        }))
+              this.items = viewModelBuilder.buildFromLoadedItems(parsedItems);
+              this._originItems = parsedItems;
+            }))
         .then((onValue) => matrixDbRepository.load())
-        .then((matrices) => setState( () {
-          this.items.addAll(viewModelBuilder.buildFromLoadedDbItems(matrices));
-          this._userItems = matrices;
-        }));
+        .then((matrices) => setState(() {
+              this
+                  .items
+                  .addAll(viewModelBuilder.buildFromLoadedDbItems(matrices));
+              this._userItems = matrices;
+            }));
   }
 
   @override
@@ -172,55 +176,51 @@ class _MyHomePageState extends State<MyHomePage> {
           );
         });
 
-    if(item.isEmbedded) {
+    if (item.isEmbedded) {
       return itemContentWidget;
     }
 
     return new OnSlide(
-      items: <ActionItems>[
-        new ActionItems(
-            icon: new IconButton(
-              icon: new Icon(Icons.delete),
-              onPressed: () {
+        items: <ActionItems>[
+          new ActionItems(
+              icon: new IconButton(
+                icon: new Icon(Icons.delete),
+                onPressed: () {},
+                color: Colors.red,
+              ),
+              onPress: () {
+                helper.showQuestionDialog(context, () {
+                  matrixDbRepository.deleteMatrix(item.id);
+                  refresh();
+                }, "Attention", "Do you really want to delete item?");
               },
-              color: Colors.red,
-        ), onPress: (){
-          helper.showQuestionDialog(
-              context,
-                  (){
-                matrixDbRepository.deleteMatrix(item.id);
-                refresh();
-                },
-              "Attention",
-              "Do you really want to delete item?");
-        },  backgroudColor: Colors.grey),
-        new ActionItems(
-            icon: new IconButton(
-              icon: new Icon(Icons.mode_edit),
-              onPressed: () {
-
+              backgroudColor: Colors.grey),
+          new ActionItems(
+              icon: new IconButton(
+                icon: new Icon(Icons.mode_edit),
+                onPressed: () {},
+                color: Colors.blue,
+              ),
+              onPress: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        MatrixDetailEditScreen(() => refresh(), item.id),
+                  ),
+                );
               },
-              color: Colors.blue,
-        ), onPress: (){
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) =>
-                  MatrixDetailEditScreen(() => refresh(), item.id),
-            ),
-          );
-        },  backgroudColor: Colors.grey),
-        //new ActionItems(icon: new IconButton(  icon: new Icon(Icons.bookmark),
-        //  onPressed: () {}, color: Colors.orange,
-        //), onPress: (){},  backgroudColor: Colors.blueGrey),
-      ],
-      child: new Container(
-          padding: const EdgeInsets.only(top:5.0, bottom: 5.0),
+              backgroudColor: Colors.grey),
+          //new ActionItems(icon: new IconButton(  icon: new Icon(Icons.bookmark),
+          //  onPressed: () {}, color: Colors.orange,
+          //), onPress: (){},  backgroudColor: Colors.blueGrey),
+        ],
+        child: new Container(
+          padding: const EdgeInsets.only(top: 5.0, bottom: 5.0),
           width: 200.0,
           height: 80.0,
           child: itemContentWidget,
-          )
-      );
+        ));
   }
 
   Widget getEditIcon(MatrixItem matrix) {
@@ -228,8 +228,7 @@ class _MyHomePageState extends State<MyHomePage> {
       return null;
     } else {
       return GestureDetector(
-        onTap: () {
-        },
+        onTap: () {},
         child: Icon(Icons.ac_unit),
       );
     }
@@ -239,12 +238,25 @@ class _MyHomePageState extends State<MyHomePage> {
     loadItems();
   }
 
+  void _showPrivacyPolicy() async {
+    const policyUrl = 'https://yurykorotin73.wixsite.com/competencymatrix';
+    if (await canLaunch(policyUrl)) {
+      await launch(policyUrl);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
+      appBar: AppBar(title: Text(widget.title), actions: <Widget>[
+        // action button
+        IconButton(
+          icon: Icon(Icons.info),
+          onPressed: () {
+            _showPrivacyPolicy();
+          },
+        )
+      ]),
       body: buildContent(),
 
       /*body: Center(
@@ -280,13 +292,13 @@ class _MyHomePageState extends State<MyHomePage> {
   BigInt findNewId() {
     var maxId = this._originItems.first.id;
 
-    for(MatrixEntity matrix in this._originItems) {
+    for (MatrixEntity matrix in this._originItems) {
       if (maxId < matrix.id) {
         maxId = matrix.id;
       }
     }
 
-    for(MatrixEntity matrix in this._userItems) {
+    for (MatrixEntity matrix in this._userItems) {
       if (maxId < matrix.id) {
         maxId = matrix.id;
       }
