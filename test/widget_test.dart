@@ -7,24 +7,37 @@
 
 import 'package:competency_matrix/view/models/heading_item.dart';
 import 'package:competency_matrix/view/models/list_item.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:competency_matrix/main.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    //TODO: Add separate method for build fixture items
+  testWidgets('Await loading', (WidgetTester tester) async {
     await tester.pumpWidget(CompetencyMatrixApp());
 
-    // Verify that our counter starts at 0.
-    //expect(find.text('0'), findsOneWidget);
-    //expect(find.text('1'), findsNothing);
+    // Verify that title was showing.
+    //expect(find.text("Programming"), findsOneWidget);
+    expect(find.text('Matrices'), findsOneWidget);
 
-    // TODO: Test adding new item
-    //await tester.tap(find.byIcon(Icons.add));
+    // Verify of showing info button
+    await tester.tap(find.byIcon(Icons.info));
+    await tester.pump();
+
+    expect(find.text('COMPETENCY'), findsNothing);
+
+    //await tester.tap(find.text("Done"));
     //await tester.pump();
+    //expect(find.text("Creation"), findsWidgets);
+  });
 
-    expect(find.text('0'), findsNothing);
-    expect(find.text("programming"), findsWidgets);
+  testWidgets('Await creation', (WidgetTester tester) async {
+    tester.binding.addTime(Duration(seconds: 7));
+
+    await tester.pumpWidget(CompetencyMatrixApp());
+
+    await tester.press(find.byType(FloatingActionButton));
+    
+    expect(find.text('Create'), findsOneWidget);
   });
 }

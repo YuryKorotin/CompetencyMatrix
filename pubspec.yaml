@@ -27,7 +27,8 @@ dependencies:
   sprintf: ^4.0.2
   shared_preferences: ^0.5.2
   progress_indicators: ^0.1.2
-  cloud_firestore: ^0.11.0+1
+  #cloud_firestore: ^0.11.0+1
+  cloud_firestore: ^0.9.7+2
   url_launcher: ^5.0.2
 
 dev_dependencies:
