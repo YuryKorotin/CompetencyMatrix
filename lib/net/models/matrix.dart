@@ -1,5 +1,4 @@
 import 'package:competency_matrix/entities/matrix_entity.dart';
-import 'package:dartson/dartson.dart';
 
 class Matrix extends MatrixEntity {
   Matrix(BigInt id,
