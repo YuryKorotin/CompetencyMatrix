@@ -25,10 +25,6 @@ void main() {
     await tester.pump();
 
     expect(find.text('COMPETENCY'), findsNothing);
-
-    //await tester.tap(find.text("Done"));
-    //await tester.pump();
-    //expect(find.text("Creation"), findsWidgets);
   });
 
   testWidgets('Await creation', (WidgetTester tester) async {
@@ -36,8 +32,6 @@ void main() {
 
     await tester.pumpWidget(CompetencyMatrixApp());
 
-    await tester.press(find.byType(FloatingActionButton));
-    
-    expect(find.text('Create'), findsOneWidget);
+    expect(find.text("Mobile programmer"), findsNothing);
   });
 }
