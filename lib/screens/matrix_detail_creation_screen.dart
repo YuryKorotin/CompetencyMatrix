@@ -117,9 +117,13 @@ class MatrixCreationState extends State<MatrixDetailCreationScreen> {
                 val.length ==0 ? 'Enter Email Id' : null,
                 onSaved: (val) => this.emailId = val,
               ),*/
-            new Container(margin: const EdgeInsets.only(top: 10.0),child: new RaisedButton(onPressed: submit,
-              child: new Text(action),),)
-
+            new Container(
+                margin: const EdgeInsets.only(top: 10.0),
+                child: new RaisedButton(
+                    onPressed: submit,
+                    child: new Text(
+                        action,
+                        key: Key('submit_creation_key'))))
           ],
         ),
       ),

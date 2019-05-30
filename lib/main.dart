@@ -29,12 +29,20 @@ void main() {
 }
 
 class CompetencyMatrixApp extends StatelessWidget {
+  static const String INFO_ICON_KEY = "info_icon";
+  static const String COMPETENCY_MATRIX_KEY = "competency_matrix";
+  static const String START_SCREEN_TITLE_KEY = "start_title_key";
+  static const String LOADING_INDICATOR_KEY = "loading_indicator_key";
+  static const String CREATE_NEW_KEY = "create_new_key";
+  static const String HEADER_ITEM_KEY = "header_item_key";
+
   CompetencyMatrixApp({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+      key: Key(START_SCREEN_TITLE_KEY),
       title: 'Competency Matrix',
       theme: ThemeData(
         primarySwatch: Colors.cyan,
@@ -95,6 +103,7 @@ class _MyHomePageState extends State<MyHomePage> {
           children: <Widget>[
             new Text(
               'Loading matrices',
+              key: Key(CompetencyMatrixApp.LOADING_INDICATOR_KEY),
               style: Theme.of(context).textTheme.title,
             ),
             BarProgressIndicator(
@@ -123,6 +132,7 @@ class _MyHomePageState extends State<MyHomePage> {
           return ListTile(
             title: Text(
               item.heading,
+              key: Key(CompetencyMatrixApp.HEADER_ITEM_KEY),
               style: Theme.of(context).textTheme.headline,
             ),
           );
@@ -251,7 +261,7 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(title: Text(widget.title), actions: <Widget>[
         // action button
         IconButton(
-          icon: Icon(Icons.info),
+          icon: Icon(Icons.info, key: Key(CompetencyMatrixApp.INFO_ICON_KEY)),
           onPressed: () {
             _showPrivacyPolicy();
           },
@@ -274,6 +284,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),*/
       floatingActionButton: FloatingActionButton(
+        key: Key(CompetencyMatrixApp.CREATE_NEW_KEY),
         onPressed: () {
           Navigator.push(
             context,

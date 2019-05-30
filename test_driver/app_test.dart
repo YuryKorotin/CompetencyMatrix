@@ -2,9 +2,11 @@ import 'package:flutter_driver/flutter_driver.dart';
 import 'package:test/test.dart';
 
 void main() {
-  group('Counter App', () {
-    final counterTextFinder = find.byValueKey('counter');
-    final buttonFinder = find.byValueKey('increment');
+  group('Competency Matrix App', () {
+    final infoIconFinder = find.byValueKey('info_icon');
+    final submitCreationFinder = find.byValueKey('submit_creation_key');
+    final newMatrixButtonFinder = find.byValueKey('create_new_key');
+    final headerTextFinder = find.byValueKey('header_item_key');
 
     FlutterDriver driver;
 
@@ -20,17 +22,22 @@ void main() {
       }
     });
 
-    test('starts at 0', () async {
-      // Use the `driver.getText` method to verify the counter starts at 0.
-      expect(await driver.getText(counterTextFinder), "0");
+    test('Loading finished with matrix', () async {
+      expect(await driver.getText(headerTextFinder), "Programming");
     });
 
-    test('increments the counter', () async {
+    test('Opening info view', () async {
       // First, tap on the button
-      await driver.tap(buttonFinder);
+      await driver.tap(infoIconFinder);
 
-      // Then, verify the counter text has been incremented by 1
-      expect(await driver.getText(counterTextFinder), "1");
+      //expect(await driver.getText(counterTextFinder), "1");
+    });
+
+    test('Opening matrix creation screen', () async {
+      // First, tap on the button
+      await driver.tap(newMatrixButtonFinder);
+
+      expect(await driver.getText(submitCreationFinder), "Create");
     });
   });
 }
